@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $head['CRMCSS'];
+    echo $menu['javascripts'];
+    echo $head['BOXCSS'];
+    echo $head['THEME'];
+    echo $head['JQTABLE'];
+    echo $head['JQBOX'];
+?>
+<script language="javascript" type="text/javascript" src="translation/telco.lng"></script>
+<script>
+$(document).ready(function() {
+    console.log('Document ready');
+    $.ajax({
+        url: 'jqhelp/telco.php',
+        dataType: 'json',
+        data: { task:  'initTel', }
+    }).done(function(json) {
+        var language = kivi.myconfig.countrycode;    
+        console.log(json);
+        //var language    = (json['countrycode'])?json['countrycode']:'en';
+        $('.lang').each( function(){
+            var key = $( this ).attr( "data-lang" );
+            $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG ERR'  );
+        });//end $.each lang
+        $( '#TelcoServer' ).val(json['TelcoServer']);
+        $( '#TelCommand' ).val(json['TelCommand']);
+        $( '#AuthKey' ).val(json['AuthKey']);
+        $( '#LocalContext' ).val(json['LocalContext']);
+        $( '#ExternContext' ).val(json['ExternContext']);
+        $( '#Vorzeichen' ).val(json['Vorzeichen']);
+    }); //end done
+    $( '#TEST' ).button().click( function() {
+            var TS = $( '#TelcoServer' ).val();
+            var TC = $( '#TelCommand' ).val();
+            var AK = $( '#AuthKey' ).val();
+            if ( TS == '' && TC == '' ) { 
+                alert('Host oder Kommando muss angegeben werden');
+                return;
+            }
+            $( '#MSG' ).html('Test gestartet');
+            $.ajax({
+                url: 'jqhelp/telco.php',
+                type: "POST",
+                data: { task:  'test', TelcoServer: TS, TelCommand: TC, AuthKey: AK },
+            }).done(function(rc) {
+                console.log(rc);
+                $( '#MSG' ).html(rc);
+            });
+        }); //end Button test
+    $( '#CALL' ).button().click( function() {
+            var FROM = $( '#FromNr' ).val();
+            var TO   = $( '#ToNr' ).val();
+            console.log('Call '+FROM+' '+TO);
+            $( '#MSG' ).html('Anruf gestartet');
+            $.ajax({
+                url: 'jqhelp/telco.php',
+                type: "POST",
+                data: { task:  'call', From: FROM, To: TO },
+            }).done(function(rc) {
+                console.log(rc);
+                $( '#MSG' ).html(rc);
+            });
+        }); //end Button call
+    $( '#SAVE' ).button().click( function() {
+            var TS = $( '#TelcoServer' ).val();
+            var TC = $( '#TelCommand' ).val();
+            var AK = $( '#AuthKey' ).val();
+            var LC = $( '#LocalContext' ).val();
+            var EC = $( '#ExternContext' ).val();
+            var VZ = $( '#Vorzeichen' ).val();
+            console.log('TelcoServer:'+ TS+' TelCommand:'+TC+' AuthKey:'+AK+' LocalContext:'+LC+' ExternContext:'+EC+'Vorzeichen:'+VZ);
+            if ( TS == '' && TC == '' ) { 
+                alert('Host oder Kommando muss angegeben werden');
+                return;
+            }
+            $.ajax({
+                url: 'jqhelp/telco.php',
+                type: "POST",
+                data: { task:  'save', TelcoServer: TS, TelCommand: TC, AuthKey: AK, LocalContext: LC, ExternContext: EC, Vorzeichen: VZ },
+            }).done(function(rc) {
+                console.log(rc);
+                $( '#MSG' ).html(rc);
+            });
+        }); //end Button save
+
+
+}); //end ready
+</script>
+
+<style>
+    .buttons { padding: 0.25em;  }
+
+    #TSL         { position:absolute; top:50px;  left:30px; }
+    #TS          { position:absolute; top:50px;  left:180px;}
+    #COL         { position:absolute; top:80px;  left:30px; }
+    #CO          { position:absolute; top:80px;  left:180px;}
+    #AKL         { position:absolute; top:110px;  left:30px; }
+    #AK          { position:absolute; top:110px;  left:180px;}
+    #LCL         { position:absolute; top:140px;  left:30px; }
+    #LC          { position:absolute; top:140px;  left:180px;}
+    #ECL         { position:absolute; top:170px;  left:30px; }
+    #EC          { position:absolute; top:170px;  left:180px;}
+    #VZL         { position:absolute; top:200px;  left:30px; }
+    #VZ          { position:absolute; top:200px;  left:180px;}
+    #FrL         { position:absolute; top:170px;  left:500px; }
+    #Fr          { position:absolute; top:170px;  left:580px;}
+    #ToL         { position:absolute; top:200px;  left:500px; }
+    #To          { position:absolute; top:200px;  left:580px;}
+    #TEST        { position:absolute; top:250px;  left:30px;}
+    #SAVE        { position:absolute; top:250px;  left:150px;}
+    #CALL        { position:absolute; top:250px;  left:500px;}
+    #MSG         { position:absolute; top:290px;  left:30px;}
+
+</style>
+
+</head>
+<body>
+<?php
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+<div class="ui-widget-content" id="mytelco" style='border:1px;'>
+    <p class="ui-state-highlight ui-corner-all tools content1" onClick="help('Telefon');"><span class='lang' data-lang='HEADLINE'></span></p>
+            <div id="TSL" data-lang='TELCOSERVER' class='lang'></div>
+            <div id="TS"><input type='text' size='50' id='TelcoServer' value=''> </div>
+
+            <div id="COL" data-lang='TELCOMMAND' class='lang'></div>
+            <div id="CO"><input type='text' size='50' id='TelCommand' value=''> </div>
+
+            <div id="AKL" data-lang='AUTHKEY' class='lang'></div>
+            <div id="AK"><input type='text' size='30' id='AuthKey' value=''> </div>
+
+            <div id="LCL" data-lang='LOCALCONTEXT' class='lang'></div>
+            <div id="LC"><input type='text' size='30' id='LocalContext' value=''> </div>
+
+            <div id="ECL" data-lang='EXTERNCONTEXT' class='lang'></div>
+            <div id="EC"><input type='text' size='30' id='ExternContext' value=''> </div>
+
+            <div id="VZL" data-lang='VORZEICHEN' class='lang'></div>
+            <div id="VZ"><input type='text' size='3' id='Vorzeichen' value=''> </div>
+
+            <div id="FrL" data-lang='FROM' class='lang'></div>
+            <div id="Fr"><input type='text' size='20' id='FromNr' value=''> </div>
+
+            <div id="ToL" data-lang='TO' class='lang'></div>
+            <div id="To"><input type='text' size='20' id='ToNr' value=''> </div>
+
+            <button id="TEST"  class="lang buttons" data-lang="TEST"></button>
+            <button id="SAVE"  class="lang buttons" data-lang="SAVE"></button>
+            <button id="CALL"  class="lang buttons" data-lang="CALL"></button>
+
+            <div id="MSG"></div>
+</div>
+<?php echo $menu['end_content']; ?>
+</body>
+</html>

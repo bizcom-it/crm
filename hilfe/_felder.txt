@@ -1,0 +1,17 @@
+Datenbankabfrage können durch weitere Bedingungen eingegrenzt werden.<br>
+Zum Beispiel auf eine bestimmte Artikelnummer.<br>
+<br>
+Als erstes wird die Beschriftung für die Eingabemaske eingegeben,<br>
+danach folgt ein Doppelpunkt ( <b>:</b> ).<br>
+Jetzt kommt das Datenbankfeld.<br>
+<br>
+Mehrere Eingabebedingungen werden durch ein Semikolon ( <b>;</b> ) getrennt.<br>
+<br>
+Beispiel:<br>
+Umsatz1:Hsum(netamount);Umsatz2:Hsum(netamount)<br>
+<br>
+Hier beziehen sich sich Einschränkungen auf einen Agregatzustand, daher muß nach dem Doppelpunkt ein &quot;<b>H</b>&quot; (für Having) gestellt werden.<br>
+Durch die zweimalige Angabe ist es möglich eine Wert einzugrenzen:<br>
+1. Feld:  &gt;300<br>
+2. Feld: &lt;1000<br>
+Es wird also nur der Bereich 300 - 1000 ausgegeben.

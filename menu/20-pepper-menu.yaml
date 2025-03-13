@@ -1,0 +1,45 @@
+---
+- id: shop
+  name: Shop
+  icon: shop
+  order: 70
+- parent: shop
+  id: shop_bestellung
+  name: Bestellungen
+  icon: shop
+  order: 100
+  access: crm_sales
+  module: crm/frame.php
+  params: 
+    action: BestellungShopToErp
+    dir: peppershop
+- parent: shop
+  id: shop_partsexport
+  name: Warenexport
+  icon: shop
+  order: 200
+  access: crm_sales
+  module: crm/frame.php
+  params: 
+    action: ArtikelErpToShop
+    dir: peppershop
+- parent: shop
+  id: shop_partsimport
+  name: Warenimport
+  icon: shop
+  order: 300
+  access: crm_sales
+  module: crm/frame.php
+  params: 
+    action: ArtikelShopoErp
+    dir: peppershop
+- parent: shop
+  id: shop_konfig
+  name: Konfiguration
+  icon: shop
+  order: 400
+  access: crm_admin
+  module: crm/frame.php
+  params: 
+    action: confedit
+    dir: peppershop

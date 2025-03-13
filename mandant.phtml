@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head><title>Mandanten Stamm</title>
+    <meta charset='utf-8' />
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $head['CRMCSS'];
+    echo $menu['javascripts'];
+    echo $head['THEME'];
+?>    
+<style type="text/css">
+    li.ui-state-default.ui-state-hidden[role=tab]:not(.ui-tabs-active) {
+    display: none;
+    }
+</style>
+<script language="javascript" type="text/javascript" src="translation/telco.lng"></script>
+<script language="JavaScript">
+    $(document).ready(function(){
+        $("#dialogachtung" ).dialog({ 
+            autoOpen: false,
+            modal: true,
+            width: 400,
+            position: [200,400],
+            buttons: [{
+                text: "OK",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            }]
+        });  
+        $( "#maintab" ).tabs({ overflow: "auto" });
+        var language = 'de';
+        $('.lang').each( function(){
+            var key = $( this ).attr( "data-lang" );
+            $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG ERR'  );
+        });
+        $( "#SAVEMAN" ).button().click(function() {
+            console.log('SAVEMAN');
+            var part = $('#ttpart').val();
+            if ( part != '' ) {
+                $.ajax({
+                    url: "jqhelp/saveUserData.php",
+                    dataType: 'json',
+                    data: {task: 'az', part: part },
+                    success: function(res) {
+                        console.log(res);
+                        if ( res.rc > 0 ) {
+                            $("#dialogachtung").dialog( "open" );
+                            $("#dialogmsg").html(res.msg);
+                        } else {
+                            savemandant();
+                        }
+                    }
+                });
+            } else {
+                savemandant();
+            }
+            return false;
+        });        
+        function savemandant() {
+            console.log('savemandant');
+            $.ajax({
+                type: "POST",
+                url: "jqhelp/saveUserData.php",
+                data: {task: 'mandant', form: $("#mandantform").serialize() },
+                success: function(res) {
+                    console.log(res);
+                    $("#dialogachtung").dialog( "open" );
+                    $("#dialogmsg").html('Mandant gesichert');
+                }
+            });
+        }
+        function getmandant() {
+            console.log('getmandant');
+            var cb = ['GEODB','BLZDB','CallEdit','CallDel','logmail','ttclearown','errlogfile','logfile','debug'];
+            $.ajax({
+                type: "POST",
+                url: "jqhelp/saveUserData.php",
+                data: {task: 'getmandant' },
+                success: function(res) {
+                    var result = $.parseJSON(res);
+                    $.each(result, function(key,row) { 
+                        if ( row.key == 'MailDelete' ) { $( "#MailDelete option[value='"+row.val+"']" ).attr('selected',true);  }
+                        else if ( $.inArray(row.key,cb ) >= 0 )      { 
+                            if ( row.val == 't' ) { $( '#'+row.key ).attr('checked',true);}
+                            else                  { $( '#'+row.key ).attr('checked',false);}
+                        } else if ( row.key == 'MailFlag' ) {
+                             tmp = $.parseJSON(row.val); 
+                             $.each(tmp, function(flag,val) {
+                                 $( '#'+val ).attr('checked',true);
+                             });
+                        } else {
+                            $( '#'+row['key']).val(row['val']);
+                        }
+                    })
+                }
+            });
+        }
+        $( "#SAVEAST" ).button().click(function(event) {
+            event.preventDefault();
+            console.log('SAVEAST');
+            $.ajax({
+                type: "POST",
+                url: "jqhelp/saveUserData.php",
+                data: {task: 'asterisk', form: $("#asteriskform").serialize() },
+                success: function(res) {
+                    $("#dialogachtung").dialog( "open" );
+                    $("#dialogmsg").html('Asterisk gesichert');
+                }
+            });
+            return false;
+        });//end Button SaveAst
+        $( '#TEST' ).button().click( function(event) {
+                event.preventDefault();
+                var TS = $( '#TelcoServer' ).val();
+                var TC = $( '#TelCommand' ).val();
+                var AK = $( '#AuthKey' ).val();
+                if ( TS == '' && TC == '' ) { 
+                    alert('Host und/oder Kommando muss angegeben werden');
+                    return;
+                }
+                //$( '#MSG' ).html('Test gestartet');
+                $.ajax({
+                    url: 'jqhelp/telco.php',
+                    type: "POST",
+                    data: { task:  'test', TelcoServer: TS, TelCommand: TC, AuthKey: AK },
+                }).done(function(rc) {
+                    console.log(rc);
+                    $("#dialogachtung").dialog( "open" );
+                    $("#dialogmsg").html(rc);
+                    //$( '#MSG' ).html(rc);
+                });
+        }); //end Button test
+        $( '#CALL' ).button().click( function(event) {
+                event.preventDefault();
+                var FROM = $( '#FromNr' ).val();
+                var TO   = $( '#ToNr' ).val();
+                console.log('Call '+FROM+' '+TO);
+                $("#dialogachtung").dialog( "open" );
+                $("#dialogmsg").html('Anruf gestartet');
+                //$( '#MSG' ).html('Anruf gestartet');
+                $.ajax({
+                    url: 'jqhelp/telco.php',
+                    type: "POST",
+                    data: { task:  'call', From: FROM, To: TO },
+                }).done(function(rc) {
+                    console.log(rc);
+                    $("#dialogmsg").html(rc);
+                    //$( '#MSG' ).html(rc);
+                });
+        }); //end Button call
+        getmandant();
+    });
+</script>
+</head>
+<body>
+<?php
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+
+<div class="ui-widget-content" style="height:722px; border:0px;">
+<p class="ui-state-highlight ui-corner-all tools content1" onClick="help('Mandant');">Mandanteneinstellungen <span id='MSG'></span></p>
+    <div id="dialogachtung" title="Achtung">
+        <br>
+        <span id='dialogmsg' style='font-size:1.5em;'></span>
+        <br>
+    </div>
+<div id="maintab">
+    <ul>
+        <li><a href="#tab1">Mandant</a></li>
+        <li><a href="#tab2">Asterisk</a></li>
+    </ul>
+
+    <span id="tab1">
+        <table style='visibility:{hide}'>
+            <form name="mandantform" id="mandantform">
+            <tr><td colspan='2'><b>externe DBs</b></td></tr>
+            <tr><td>Geo-DB</td>                             <td><input type='checkbox' name='GEODB' id='GEODB' value='t'> siehe install.txt</td></tr>
+            <tr><td>Blz-DB</td>                             <td><input type='checkbox' name='BLZDB' id='BLZDB' value='t'> siehe install.txt</td></tr>
+            <tr><td colspan='2'><b>Kontakthred</b></td></tr>
+            <tr><td>Editieren</td>                          <td><input type='checkbox' name='CallEdit' id='CallEdit' value='t' ></td></tr>
+            <tr><td>Löschen</td>                            <td><input type='checkbox' name='CallDel' id='CallDel' value='t' ></td></tr>
+            <tr><td colspan='2'><b>E-Mail</b></td></tr>
+            <tr><td>Nur anzeigen wenn nicht gesetzt:</td><td><input type='checkbox' name="MailFlag[Seen]"     id='Seen'     value='t' > Seen 
+                                                             <input type='checkbox' name="MailFlag[Flagged]"  id='Flagged'  value='t' > Flagged
+                                                             <input type='checkbox' name="MailFlag[Draft]"    id='Draft'    value='t' > Draft
+                                                             <input type='checkbox' name="MailFlag[Answered]" id='Answered' value='t' > Answered
+                                                             <input type='checkbox' name="MailFlag[Deleted]"  id='Deleted'  value='t' > Deleted
+                                                             <input type='checkbox' name="MailFlag[Recent]"   id='Recent'   value='t' > Recent
+                </td></tr>
+            <tr><td>Gelöscht markieren mit: </td><td><select name='MailDelete' id='MailDelete'>
+                                                     <option value='Flagged'>Flagged
+                                                     <option value='Deleted'>Deleted
+                                                     <option value='Draft'>Draft
+                                                  </select> Wenn Deleted, wird der Mailordner bereinigt</td></tr>
+            <tr><td>versendete Mails loggen</td>        <td><input type='checkbox' name='logmail' id='logmail' value='t' ></td></tr>
+            <tr><td colspan='2'><b>Vorgabe Map</b></td></tr>
+            <tr><td>Map-URL</td>            <td><input type='text' name='streetview_man' id='streetview_man' value='' size='60'></td></tr>
+            <tr><td colspan='2'>Platzhalter: %TOSTREET% %TOZIPCODE% %TOCITY% %FROMSTREET% %FROMZIPCODE% %FROMCITY%</td></tr>
+            <tr><td>Leerzeichenersatz</td>  <td><input type='text' name='planspace_man' id='planspace_man' value='' size='1' maxlength='1'> (GoYellow: '-', Viamichelin, Google: '+')</td></tr>
+            <tr><td colspan='2'><b>Zeiterfassung</b></td></tr>
+            <tr><td>Artikelnummer für Arbeitszeit</td>  <td><input type='text' name='ttpart' id='ttpart' value='' size='10'></td></tr>
+            <tr><td>Minuten je Einheit</td>             <td><input type='text' name='tttime' id='tttime' value='' size='5'></td></tr>
+            <tr><td>Ab hier eine Einheit</td>           <td><input type='text' name='ttround' id='ttround' value='' size='5'>min.</td></tr>
+            <tr><td>Nur eigene Aufträge abrechnen</td>  <td><input type='checkbox' name='ttclearown' id='ttclearown' value='t'></td></tr>
+            <tr><td colspan='2'><b>Benutzerfreundliche Links</b></td></tr>
+            <tr><td>Links zu Verzeichnissen</td><td>
+                     Gruppe: <input type="text" name="dir_group" id="dir_group" size="12" value=''>
+                     &nbsp;&nbsp; Rechte: <input type="text" name="dir_mode" id='dir_mode' size="4" value=''>
+                     <input type="checkbox" name="sep_cust_vendor" id="sep_cust_vendor" value='t' >Kunden/Lieferanten trennen</td>
+            <tr><td colspan='2'><b>Diverse</b></td></tr>
+            <tr><td>CRM-Pfad</td>                   <td><span id='erppath'><?php echo $_SESSION['erppath']; ?></span></td></tr>
+            <tr><td>Logfile                </td>    <td>tmp/lxcrm.err<input type='checkbox' name='errlogfile' id='errlogfile' value='t'> &nbsp;
+                                                        tmp/lxcrm.log<input type='checkbox' name='logfile' id='logfile' value='t'>
+                                                        Debug<input type='checkbox' name='debug' id='debug' value='t'></td></tr>
+            <tr><td>Listenlimit</td>                <td><input type='text' name='listLimit' id='listLimit' value='' size='8'></td></tr>
+        </table>
+        <button id="SAVEMAN"  class="lang buttons" data-lang="SAVE"></button>   
+        </form>
+    </span>
+    <span id="tab2">
+        <form name="asteriskform" id="asteriskform">
+        <table>
+        <tr><td><span data-lang='TELCOSERVER' class='lang'></span></td>   <td><input type='text' size='50' name='TelcoServer'  id='TelcoServer'   value=''></td></tr>
+        <tr><td><span data-lang='TELCOMMAND' class='lang'></span></td>    <td><input type='text' size='50' name='TelCommand'   id='TelCommand'    value=''></td></tr>
+        <tr><td><span data-lang='AUTHKEY' class='lang'></span></td>       <td><input type='text' size='30' name='AuthKey'      id='AuthKey'       value=''></td></tr>
+        <tr><td><span data-lang='LOCALCONTEXT' class='lang'></span></td>  <td><input type='text' size='30' name='LocalContext' id='LocalContext'  value=''></td></tr>
+        <tr><td><span data-lang='EXTERNCONTEXT' class='lang'></span></td> <td><input type='text' size='30' name='ExternContext'id='ExternContext' value=''></td></tr>
+        <tr><td><span data-lang='VORZEICHEN' class='lang'></span></td>    <td><input type='text' size='3'  name='Vorzeichen'   id='Vorzeichen'    value=''></td></tr>
+        <tr><td><span data-lang='FROM' class='lang'></span></td>          <td><input type='text' size='20' name='FromNr'       id='FromNr'        value=''></td></tr>
+        <tr><td><span data-lang='TO' class='lang'></span></td>            <td><input type='text' size='20' name='ToNr'         id='ToNr'          value=''></td></tr>
+        <tr><td><button id="TEST"  class="lang buttons" data-lang="TEST"></button></td>            
+            <td><button id="CALL"  class="lang buttons" data-lang="CALL"></button></td></tr>
+        </table> 
+        <button id="SAVEAST"  class="lang buttons" data-lang="SAVE"></button>   
+        </form>
+    </span>
+</div>
+<?php echo $menu['end_content']; ?>
+</body>
+</html>
+

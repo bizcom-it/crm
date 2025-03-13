@@ -1,0 +1,10 @@
+Kurzbezeichnung für den Bericht. Ist auch Bestandteil für den Dateinamen des CSV-Exports.<br>
+Muß eindeutig sein.<br>
+<br>
+Vergeben wird mit der Installation:<br>
+K1-4 für Kassenberichte<sup>1)</sup><br>
+T1 Tagesbericht<br>
+M1 Monatsbericht<br>
+U1-5 verschiedene Umsatzberichte<br>
+<br>
+<sup>1)</sup> Werden nur Angezeigt, wenn die Tabellen für die Kasse installiert sind.

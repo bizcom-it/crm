@@ -1,0 +1,6 @@
+<?php
+$ERPNAME='openkonto';
+$ERPPATH='';
+$ERP_BASE_URL='';
+$erpConfigFile='kivitendo';
+?>

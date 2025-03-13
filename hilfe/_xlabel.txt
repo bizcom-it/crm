@@ -1,0 +1,2 @@
+<br>
+Diese Bezeichnung wird für die X-Achse in der Grafik ausgegeben.

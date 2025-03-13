@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Diese Vorlage steht unter der GPL-Lizenz, Version2 
+% siehe  http://www.gnu.de/gpl-ger.html
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,foldmarks=true]{scrartcl}
+\usepackage{fancyhdr}
+\usepackage[pdftex]{graphicx}
+\usepackage{german}
+\usepackage{icomma}
+\usepackage{longtable}
+\usepackage[utf8]{inputenc}
+\usepackage{pifont}
+\usepackage{setspace}
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage{filecontents}
+\usepackage{ltxtable}
+\usepackage{booktabs}
+\usepackage{etex}
+\usepackage{lastpage}
+\usepackage{multirow} 
+\usepackage{color}
+\setlength{\voffset}{-0.8cm} 
+\setlength{\hoffset}{-1.5cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0.5cm}
+\setlength{\headsep}{0.1cm}
+\setlength{\topskip}{0pt}
+\setlength{\oddsidemargin}{1.0cm}
+\setlength{\evensidemargin}{1.0cm}
+\setlength{\textwidth}{18.1cm}
+\setlength{\textheight}{24.3cm}
+\setlength{\footskip}{1.8cm} 
+\setlength{\parindent}{0pt}
+\renewcommand{\baselinestretch}{1}
+
+% ------------------------------------------------------------
+% Der eigtl. Dokumenten-Inhalt beginnt hier:
+% ------------------------------------------------------------
+
+\newcommand\Zeile[5]{%
+     \multirow{3}{25mm}{ \begin{picture}(30,40)(0,-12) \includegraphics*[height=40px]{#1} \end{picture} }& 
+     \multicolumn{2}{p{115mm}}{\textbf #4}  \\
+     \nopagebreak & \multicolumn{2}{p{115mm}}{\small #5}  \\
+     \nopagebreak & \small #2 & \multicolumn{1}{r}{\textbf #3 €}   
+     \\ 
+}
+
+\begin{document}
+% Schrift-Stil festlegen:
+\fontfamily{cmss}\fontsize{12}{15pt plus 0.15pt minus 0.1pt}\selectfont
+
+\centering
+\LARGE Flyer \\
+%\normal
+\vspace{3cm}
+\parbox{14cm}{
+Meine Firma \\
+Überholspur 1\\
+\\
+12345 Sonstwo\\
+\\
+Tel.: +49 1234 567890\\
+info@meine-firma.false\\
+}
+\\
+\vspace{1cm}
+Erstelldatum: <%datum%>
+
+
+% ------------------------------------------------------------
+% Die Positionen-Tabelle
+% ------------------------------------------------------------
+\begin{filecontents}{tabelle.tex}
+
+\begin{longtable}{@{}p{30mm}p{55mm}p{55mm}@{}} % Definition der Spalten
+
+	% Spaltenueberschriften
+	%\hline % Trennlinie
+    \endfirsthead
+
+	%\hline % Trennlinie
+    \endhead
+
+    % Fuss der Teiltabellen
+  \endfoot
+
+    % Das Ende der Tabelle
+    % \hline % Trennlinie
+  \endlastfoot
+
+	% Artikel-Positionen:
+	<%foreach_part%>   
+            \ifthenelse{\equal{<%newpg%>}{new}}{  } 
+            { \Zeile{<%image%>}{<%partnumber%>}{<%sellprice%>}{<%description%>}{<%notes%>} }
+	<%end_part%>
+
+	\hline
+\end{longtable}
+\end{filecontents}
+\LTXtable{\textwidth}{tabelle.tex}
+
+\end{document}

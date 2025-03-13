@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title>CRM: Suche</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>Adressuche</h2>
+<hr>
+Drei Reiter bestimmen die Suchmaske:<br><br>
+[<a name='Schnellsuche' class='wikin'>Schnellsuche</a>]<br>
+<br>
+Ist die Autovervollst&auml;ndigung aktiviert, beginnt wärend der Eingabe die Suche nach dem Begriff bei Firmen, Ansprechpartnern und Benutzer. Treffer werden in einer Dropdown-Liste aufgeführt. Die Eintr&auml;ge können mit der Maus ausgew&auml;hlt werden oder mit den Pfeiltasten. &lt;ENTER&gt; übernimmt die Auswahl.<br>
+Die Sucheingabe kann aber auch mit einem Klick auf <span class="knopf">Kontaktverlauf</span> auf die Kontaktverl&auml;ufe (Kontaktname) ausgeführt werden. Alle Treffer werden in einer Tabelle angezeigt. Mit einem Klick auf einen <span class='link'>Eintrag</span>, wird dieser in einem extra Fenster angezeigt.<br>
+In der Dropdown-Liste "Verlauf" werden die zuletzt durchgeführten Suchanfragen gespeichert.<br>
+<br>
+
+[<a name='Firmensuche' class='wikin'>Firmensuche</a>]<br>
+An dem oberen Rand werden für eine Schnellsuche die <span class="knopf">Anfangsbuchstaben</span> der Firmen bzw. Kunden angeboten. Mit einem Klick auf den gewünschten Buchstaben wird die Suche nach den passenden Eintr&auml;gen in der Datenbank gestartet. Ein Klick auf die Raute <span class="knopf">#</span> startet eine Suche nach Kunden die nicht mit einem Buchstaben beginnen. Es werden bei der Buchstabensuche die Rechnungsadresse1 und Rechnungsadresse2 durchsucht.<br>
+<br>
+Unter der Buchstabensuche wird die komplette Suchmaske angeboten.<br>
+Füllen Sie die gewünschten Suchfelder aus. Es kann auch mit Jockerzeichen gesucht werden, d.h. man kann "_" oder "?" für genau ein Zeichen und "%" oder "*" für beliebige Zeichen einsetzen. Jedes Suchfeld wird automatisch um "%" erweitert. Mit der Checkbox "unscharf suchen" kann durch entfernen dieses Hakens das Gesuchte mit der exakten Endung gefunden werden. Mit der Checkbox "prefix" kann dem Suchbegrif ein vorher eingestelltes Zeichen vorangestellt werden. Z.B. ein "%". Damit verhält sich die Suche wie die ERP. Die Suche ist nicht Case-Sensitiv, das hei&szlig;t es wird nicht zwischen Gro&szlig; und Kleinschreibung unterschieden.<br>
+<br>
+<pre> Firmenname "a%a" = alle Firmen die mit "a" beginnt und noch mindestens ein weiteres "a" enth&auml;lt.
+</pre>
+<pre> Abteilung "%gbr" = alles was in der Abteilung ein GbR im Namen enth&auml;lt.
+</pre>
+Mehrere ausgefüllte Felder werden in der Abfrage als <strong>und</strong> -Bewertung gewertet:<br>
+<pre> Firmenname "__ab" Postleitzahl "85" = alles was an der 3ten Stelle des Firmennames ein a hat 
+    und an der 4ten Stelle ein b <strong>und</strong> eine Postleitzahl mit der Nummer 85.
+</pre><br>
+Das Verhalten kann auf <b>oder</b> geändert werden, wenn die Radiobox "suche" verändert wird.<br>
+Wird in der Checkbox der Haken für "auch in abweichender Lieferadresse suchen" deaktiviert, wird nur in der Hauptanschrift gesucht.<br>
+<br>
+Die Felder Umsatz und Mitarbeiter dürfen neben Zahlen auch Operatoren enthalten:<br>
+Umsatz: &gt;100&lt;150 entspricht: Umsatz zwischen 100 und 150 Euro<br>
+<br>
+[<a name='Personensuche' class='wikin'>Personensuche</a>]<br>
+<br>
+Die Personensuche ist ähnlich wie die Firmensuche aufgebaut, jedoch wird in der Tabelle Ansprechpartner gesucht.<br>
+Wird das Häkchen vor "nicht zugeordnete Ansprechpartner" gesetzt, werden auch Personen gefunden, die keiner Firma zugeordnet sind, zum Beispiel private Adressen.<br>
+<br>
+=[<a name='Ergebnis' class='wikin'>Ergebnisse</a>]=<br>
+Bei keinem gefundenen Eintrag erscheint die Ausgabe "Leider nichts gefunden". Bei einem Eintrag wird in die Detailansicht der [<a class='wikil' href='DetailansichtFirmendaten.html'>Firmen</a>] bzw. [<a class='wikil' href='DetailansichtPersonendaten.html'>Personen</a>] gesprungen, bei mehreren Treffern kommt man in die Maske [<a class='wikil' href='ErgebnisAdressSuche.html'>Ergebnis Suche</a>].<br>
+
+<br>
+=[<a name='Extrafelder' class='wikin'>Extrafelder</a>]=<br>
+Wird bei der Firmensuche nur eine Tabelle ausgewählt, so wird ein grünes Kreuz angezeigt. Bei der Personensuche ist es bereits vorhanden.<br>
+Ein Klick auf diese <span class='link'>Kreuz</span> öffnet die jeweils hinterlegte Eingabemaske als Suchmaske. Die Felder sind hier als "oder" miteinander Verknüpft.
+<br>
+<br>
+=[<a name='Report' class='wikin'>Report</a>]=<br>
+Wird in der Suchmaske ein Firmen bzw Kundenbereich eingeben und auf den Button "Report" geklickt, popt der Reportgenerator auf. Drei Auswahlboxen werden angezeigt. Die erste Box stellt die Datenbanfelder der Kunden-/Lieferantenadresse bereit, die zweite Box die Felder der abweichenden Anschriften. In der letzten Box stehen die Felder der Ansprechpartner bereit.<br />
+W&auml;hlen Sie  die ben&ouml;tigten Felder in den Auswahlboxen aus.<br>
+W&auml;hlen Sie die gewünschten Zeilen für den Bericht aus:<br>
+<br>
+<pre> nur Mausklick - nur diese Zeile ausw&auml;hlen
+ &lt;Strg&gt; + Mausklick - diese Zeile dazu ausw&auml;hlen
+ Mausklick und dann &lt;Shift&gt; +Mausklick - w&auml;hlt den Bereich mit dem Zeilen
+</pre><br>
+
+Mit dem Knopf <span class='knopf'>ok</span> starten Sie den Generator. Das Fenster schlie&szlig;t sich wieder und eine leere Suchmaske wird wieder angezeigt. Unterhalb der Aktionskn&ouml;pfe wird Ihnen nun ein Link "Report" angeboten, mit dem Sie die Daten im CSV-Format lokal speichern k&ouml;nnen.</p>
+Es kann vorkommen, dass eine Firma mehrfach in der Datei aufgenommen wurde. Das liegt daran, dass es dann mehrere Ansprechpartner oder abw. Adressen gibt.<br />
+<br />
+[<a href="#top">nach Oben</a>]
+<br>
+
+<br>
+<hr>
+Seiten die hierher zeigen [<a class='wikiw' href='AnwenderDokumentationLx-Office.html'>AnwenderDokumentation</a>] [<a class='wikiw' href='ErgebnisAdressSuche.html'>Ergebnisadresssuche</a>] [<a class='wikiw' href='DetailansichtPersonendaten.html'>Detailansich Personendaten</a>] [<a class='wikiw' href='DetailansichtFirmendaten.html'>Detailansich Firmenendaten</a>]
+<br><center><a href="Javascript:self.close()">close</a></center>
+</body>
+</html>

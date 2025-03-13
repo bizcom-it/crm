@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<title>CRM: DetailansichtFirmendaten</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>DetailansichtFirmendaten</h2>
+<hr>
+Hier werden die Firmendaten detaliert angezeigt. Die Information wird über vier Reiter bereitgestellt. Neben den Reitern befindet sich noch ein Aktionsmenü.<br>
+[<a name='Mitteilungen' class='wikil'>Mitteilungen</a>] erscheinen über dem Hauptmenue. Sie haben je nach Priorität andere Darstellungen der Wichtigkeit.<br>
+<br>
+<a name='Firmenstamm' class='reiter'>Firmenstamm</a><br>
+<hr>
+Je nach Benutzereinstellungen werden mehr oder weniger Symbole in dem Feld der Rechnungsmaske angezeigt. 
+Im Drop-Down Menü [<a href="#menue" class='wikil'>Aktionen</a>] werden diese aber auch aufgeführt. 
+Sind in der Wissen-DB entsprechende Einträge, wird auch noch die Auswahl [<a href='#KdHilfe' class='wikil'>Hilfe</a>] angeboten.<br>
+<br>
+Das dreigeteilte Anzeigefenster enthält Informationen über die Rechnungsanschrift, darunter weitere Informationen in Reitern
+und rechts Reiter für verschiedene [<a href='#listen'>Listen</a>], unter anderem einen [<a class='wikil' href='Kontaktverlauf.html'>Kontaktverlauf</a>]. <br>
+<br>
+[<a name='Rechnungsanschrift' class='wikil'>Rechnungsanschrift</a>]<br>
+In ihr finden sich alle wichtigen Daten auf einen Blick. Ist eine <span class="link">E-Mailadresse</span> eingegeben, so wird diese als Link dargestellt und führt zu dem eingebauten eMail-Client. Eine evtl. vorhandene <span class="link">Web-Adresse</span> wird auch als Link angezeigt und öffnet ein neues Fenster mit der angegebenen URL.<br>
+<br>
+Mit einem Klick auf das <span class="knopf">Briefsymbol</span> wird ein neues Fenster geöffnet. Dort wird die Adresse als reiner Text dargestellt um sie mit Copy + Paste in eine andere Anwendung übernehmen zu können. Auch kann hier ein <span class="knopf">Etikettdruck</span> gestartet werden. Der Button <span class="knopf">Auftrag</span>  wechselt in die Maske "Auftrag Erfassen" im Menü "Verkauf" der ERP. Der Knopf <span class="knopf">Angebot</span> ruft die Maske "Angebot Erfassen" auf. Zwei weitere Symbole verzweigen zu <span class="knopf">Lieferschein</span> und <span class="knopf">Rechnung</span> erzeugen. Die kleinen <span class="knopf">Karte</span> ruft einen eingestellten Mapserver in einem Extrafenster auf.<br>
+<br>
+[<a name='Informationen' class='wikil'>weitere Informationen</a>]<br>
+Fünf Reiter halten unterschiedliche Informationen bereit. Die bevorzugte Information kann am Benutzer eingestellt werden.<br>
+<hr>
+<a name='Lieferanschrift' class='wikil'>Lieferanschrift</a><br>
+Ist eine Lieferadresse bei den Stammdaten hinterlegt, so wird diese angezeigt, an sonsten die Rechnungsanschrift.<br>
+Gibt es weitere Lieferanschriften, so können diese mit den Pfeilen abgerufen werden.<br>
+<br>
+<a name='Notizen' class='reiter'>Notizen</a><br>
+Die Stichworte und interne Bemerkungen werden hier ausgegeben.<br>
+<br>
+<a name='Variablen' class='reiter'>Variablen</a><br>
+Sind Variablen angelegt, so werden diese hier neben den Firmenspezifischen Inhalten angezeigt.<br>
+<br>
+<a name='Finanzinfos' class='reiter'>Finanzinfos</a><br>
+Informationen wie Bankverbindung, Kundentyp und Zahlungskonditionen, Rabatt und Preisgruppe, offene Posten und Aufträge stehen hier bereit.<br> 
+<br>
+<a name='ZusatzInfo' class='reiter'>zusätzliche Infos</a><br>
+Gehört diese Firma einem übergeordneten Konzern an, so wird der <span class='link'>Name</span> in den eckigen Klammern angezeigt. Ein Klick darauf ruft die Daten ab.
+Sind andere Firmen dieser Firma untergeordnet, so wird die Anzahl in den runden Klammern ausgegeben. Wird die <span class='link'>Zahl</span> angeklickt, wird eine Übersichtsseiter aufgerufen.<br>
+<hr>
+<br>
+<a name="listen"></a>Auf der rechten Seite sind vier Reiter für unterschiedliche Listen:<br>
+<br>
+<a name='Kontaktverlauf' class='reiter'>Kontakt</a><br>
+Unter diesem Reiter werden, wenn vorhanden, die Kontaktereignisse aufgeführt und es wird die Möglichkeit gegeben einen neuen [<a class='wikil' href='Kontaktverlauf.html'>Verlauf</a>] einzustellen. Ein Klick auf die entsprechende <span class='link'>Zeile</span> öffnet einen entsprechenden Dialog. Der zuletz bearbeitete Eintrag wird fett ausgegeben.<br>
+<br>
+<a name='Angebot' class='reiter'>Angebot</a><br>
+Alle Angebote dieser Firma werden hier aufgelistet.<br> 
+<br>
+<a name='Auftrag' class='reiter'>Auftrag</a><br>
+Alle Aufträger dieser Firma werden hier aufgelistet.<br> 
+<br>
+<a name='Rechnung' class='reiter'>Rechnung</a><br>
+Alle Rechnungen und Gutschriften dieser Firma werden hier aufgelistet.<br> 
+<br>
+Jede Zeile enthält das Datum, die erste Position des Dokumentes, den Nettobetrag und die Nummer. Ein Klick auf einen <span class='link'>Eintrag</span> führt direkt zur Bearbeitungsmaske.<br>
+<hr>
+<hr>
+<br>
+<a name='Kontakte' class='reiter'>Ansprechpartner</a><br>
+<hr>
+Wird dieser Reiter angeklickt, werden zunächst alle Ansprechpartner der Firma angezeigt. Ein Klick auf die gewünschte Person stellt dann diese ein. Sollte es zu der Firma nur einen Kontakt geben, wird dieser automatisch angezeigt. Das zweiteilige Anzeigefenster enthält im linken Teil die [<a href='DetailansichtPersonendaten.html' class='wikil'>Daten</a>] einer Kontaktperson, im rechten Teil erscheint wieder ein [<a class='wikil' href='Kontaktverlauf.html'>Kontaktverlauf</a>] mit dieser Person. <br>
+Unterhalb der linken Anzeige gibt es wieder einige Knöpfe um den Eintrag zu [<a href='PersonenEingebenEditieren.html' class='wikil'>bearbeiten</a>], neue Kontaktdaten [<a href='PersonenEingebenEditieren.html' class='wikil'>einzugeben</a>] oder eine Kontaktperson aus einer [<a class='wikil' href='Suche.html#Personensuche'>Personensuche</a>] zu zuteilen.<br>
+<br>
+<a name='Umsatz' class='reiter'>Umsätze</a><br>
+<hr>
+Ein erster Klick auf den Reiter Umsätze stellt die summierten Umsatzdaten der letzten 12 Monate als tabellarische Liste und als Grafik dar. Mit den Links oberhalb der Grafik können andere <span class='link'>Jahre</span> abgerufen werden. Die Grafik stellt die Umsatzdaten logarithmisch dar, mit einem weiteren Klick auf den Reiter <span class='reiter'>Umsätze</span> kann in eine lineare Darstellung umgeschaltet werden und wieder zurrück. Dargestellt werden je Monat: - Gesamtumsatz - durchschnittlicher Umsatz - Gutschriften - Angebote Mit einem Klick auf einen <span class='link'>Tabelleneintrag</span>, wird in die Monatsansicht umgeschaltet. Jetzt sind alle Rechnungen und Angebote einzeln sichtbar. Die einzelnen <span class='link'>Rechnungspositionen</span> können in einem neuen Fensten durch anklicken dargestellt werden.<br><br>
+Der Link <span class='link'>Auftragschancen</span> ruft die eingestellten [<a class='wikil' href='AnwenderDokumentationLx-Office.html#Auftragschance'>Auftragschancen</a>] des Kunden auf.<br>
+<br>
+<br>
+<a name='Dokumente' class='reiter'>Dokumente</a><br>
+<hr>
+Ein kleiner  [<a href='Dokumentenmanager.html' class='wikil'>Dokumentenmanager</a>], der direkt im Kundenverzeichnis startet.<br>
+Zusätzlich kann hier aus einer [<a class='wikil' href='Dokumentvorlagen.html'>Dokumentvorlagen</a>] ein neues Dokument generiert werden. 
+Mit einem Klick auf das gewünschte Dokument kommen Sie in die [<a class='wikil' href='Dokumenterstellung.html'>Variablenansicht</a>]. Verschiedene Felder im Dokument werden mit diesen Variablen ersetzt. Dabei können verschiedene Felder bereits mit den Daten einer Firma oder Kontaktperson ausgefüllt sein. Die Felder für Datum und Zeit beziehen sich auf die Serverzeit. Sind alle Felder zu Ihrer Zufriedenheit ausgefüllt drücken Sie einfach nur "Erstellen". Damit wird das eigentliche Dokument erzeugt und zum Speichern angeboten. Gleichzeit wird das Dokument auch bei der entsprechenden Adresse im [<a class='wikil' href='Kontaktverlauf.html'>Kontaktverlauf</a>] zugeordnet.<br>
+<br>
+Sind zu der Firma Wartungsverträge hinterlegt, so finden sie diese im entsprechenden Drop-Down Menü.<br>
+<br>
+
+[<a name='KdHilfe' class='wikil'>Hilfe-Pulldown</a>]<br>
+Ist unter der [<a class='wikil' href='WissensDB.html'>Wissens-DB</a>] mindestens eine Kategorie für Kundenhilfe eingerichtet, wird ein Pulldown-Menü neben den Reitern angezeigt. Die Auswahl eines Menüpunktes ruft die Wissens-DB mit dem gewünschten Thema in einem extra Fenster auf.<br>
+<br>
+
+[<a name="menue" class='wikil'>Drop-Down-Menü</a>]<br>
+"bearbeiten" ruft die [<a class='wikil' href='KundeEingebenEditieren.html'>Bearbeitungsmaske</a>] auf.<br>
+[<a class='wikil' href='TimeTrack.html' class='wikil'>Zeiterfassung</a>] Arbeitszeiten zu Firmenprojekten erfassen.<br>
+"Extra Daten" <br>
+"VCard" erzeugt eine Textdatei im VCard 3.0 Stiel. <br>
+"Copy to Cookie" Speichert die VCard im Cookie, damit kann ein neuer Eintrag generiert werden.<br>
+"QR-Code" erzeugt aus der VCard ein QR-Code und bietet das Bild zum Download an.<br>
+"Karteikarte" erzeugt ein OOo-Dokument mit den Firmeninformationen für eine Karteikarte.<br>
+"Angebot / Auftrag / Lieferschein / Rechnung erstellen"<br>
+<hr>
+Seiten die hierher zeigen [<a class='wikil' href='AnwenderDokumentationLx-Office.html'>AnwenderDokumentation</a>] [<a class='wikil' href='DetailansichtPersonendaten.html'>DetailansichtPersonendaten</a>] [<a class='wikil' href='FirmenEingebenEditieren.html'>FirmenEingebenEditieren</a>] [<a class='wikil' href='ErgebnisAdressSuche.html'>ErgebnisAdressSuche</a>] 
+<br><center><a href="Javascript:self.close()">close</a></center>
+</body>
+</html>

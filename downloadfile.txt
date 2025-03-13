@@ -1,0 +1,31 @@
+http://forum.jquery.com/topic/simple-file-download-for-generated-output
+
+function downloadFileXfer( urlTgt, formName, callBackFunc ) {         // Manage a file download and return
+
+ var iFrameName = "downloadFileXferIframe";                                 // Iframe name for download
+ if ( $( "#" + iFrameName ).length == 0 ) {                                      // If the iframe has not been defined
+  var iFrame = $( "<iframe name=\"" + iFrameName + "\" " +            // Create an iframe object              "id=\"" + iFrameName + "\" " +              "style=\"display: none\">" );
+  $( "body" ).append( iFrame );                                                      // Append the iframe to the body of the document
+ }
+ $( "#" + iFrameName ).on( "load", function() {                                // Create the routine to handle a load event
+  var retVal= $( "#" + iFrameName )[0].contentWindow.document.body.innerHTML;    // Retrieve the return value
+  if ( retVal.length != 0 ) {                                                               // If there is data to pick up
+   callBackFunc( retVal );                                                              // Pass the data back to the callback function
+  }
+ });
+ $( "#" + formName ).attr( "action", urlTgt )                                      // Set the target Url
+            .attr( "method", "post" )                                                     // Post method
+            .attr( "enctype", "multipart/form-data" )                                // Encoding type
+            .attr( "encoding", "multipart/form-data" )
+            .attr( "target", iFrameName )                                              // Target for returned data
+ $( "#" + formName ).submit();                                                       // Submit the form
+}
+
+function errorHandler( error ) {                                                         // Routine to call if an error is found
+ alert( error );                                                                                 // Some code to handle the error
+}
+downloadFileXfer( "serverroutinename.php", "someform", errorHandler ); // Download the file
+
+
+
+

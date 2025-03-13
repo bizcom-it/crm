@@ -1,0 +1,4 @@
+<br>
+Mit diesem Tool können bestehende Auswertungen verändert, sowie neue Auswertungen erzeugt werden.<br>
+<br>
+Noch erfordert das Arbeiten damit Expertenwissen im Bereich SQL, dafür bietet es eine große Freiheit.<br>

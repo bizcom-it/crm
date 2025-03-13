@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $menu['javascripts'];
+    echo $head['JQTABLE'];
+    echo $head['THEME'];
+
+
+?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var number;
+        var entryData;
+        $("#dialogFound").dialog({
+            autoOpen: false,
+            title: 'Telefonverzeichnis-Eintrag',
+            modal: true,
+            width:'auto',
+            buttons: [{
+                text: "Nummer zuordnen",
+                click: function(data){
+                    $('#dialogFound').append('<input type="text" id="tmp" value="' + number + '">');
+                    $( '#tmp' ).select();
+                    document.execCommand( "cut" );
+                    $( '#tmp' ).remove();
+                    window.location.href = "getData.php?action=edit&number=" + number;
+                }
+            },
+            {
+                text: "Neuer Kunde",
+                click: function(data){
+                    window.location.href = "firmen3.php?Q=C&" + $.param( entryData );
+                }
+            },
+            {
+                text: "Neuer Liefrerant",
+                click: function(){
+                    window.location.href = "firmen3.php?Q=V&" + $.param( entryData );
+                }
+            },
+            {
+                text: "Neue Person",
+                click: function(data){
+                    window.location.href = 'personen3.php?' + $.param( entryData );
+                }
+            },
+            {
+                text: "Close",
+                click: function(){
+                    $(this).dialog('close');
+                }
+            }]
+        })
+        $("#dialogNotFound").dialog({
+            autoOpen: false,
+            title: 'Telefonverzeichnis-Eintrag',
+            modal: true,
+            width:'auto',
+            buttons: [{
+                text: "Nummer zuordnen",
+                click: function(data){
+                    $('#dialogNotFound').append('<input type="text" id="tmp" value="' + number + '">');
+                    $( '#tmp' ).select();
+                    document.execCommand( "cut" );
+                    $( '#tmp' ).remove();
+                    window.location.href = "getData.php?action=edit&number=" + number;
+                }
+            },
+            {
+                text: "Close",
+                click: function(){
+                    $(this).dialog('close');
+                }
+            }]
+
+
+        });
+        $(document).on("click", "#DataTable tr", function(e) {
+            var src = $(this).closest('tr').children().eq(2).text();
+            var dst = $(this).closest('tr').children().eq(3).text();
+            var id  = $(this).closest('tr').children().eq(4).text();
+            var typ = $(this).closest('tr').children().eq(5).text();
+            if ( typ == 'X' ){ //Number is not in database
+                number = $.isNumeric( src ) ? src : dst;
+                $.ajax({
+                    dataType: "json",
+                    url: "jqhelp/call.php?action=numberToAdress&data=" + number,
+                    method: "GET",
+                    success : function (data){
+                        //alert("Data: " + JSON.stringify(data));
+                        entryData = data;
+                        //delete entryData['backlink'];
+                        $('#dialogFound').dialog("open")
+                        .html('<table id="myTable">' +
+                                '<tr><td>Anrede: </td><td>' + data.greeting + '</td></tr>' +
+                                '<tr><td>Name: </td><td>' + data.name + '</td></tr>' +
+                                '<tr><td>Straße Nr.: </td><td>' + data.street + '</td></tr>' +
+                                '<tr><td>PLZ Ort: </td><td>' + data.zipcode + ' ' + data.city + '</td></tr>' +
+                                '<tr><td colspan="2" align=center ><a target="_blank" href="' + data.backlink + '">Telefonverzeichnis ansehen</a></td></tr>' +
+                              '</table>');
+                        delete entryData['backlink'];
+                    },
+                    error: function(data){
+
+                        $('#dialogNotFound').dialog("open").html("Zur Telefonnummer: " + number + " gibt es keinen Eintrag im Telefonverzeichnis. <p> Nummer einfügen mit [STRG+V] </p>");
+                    }
+               });
+            }
+            else if( typ == 'K' ) window.location.href = "kontakt.php?id=" + id;
+            else if( typ == 'C' || typ == 'V' ) window.location.href = "firma1.php?Q=" + typ +"&id=" + id;
+            // if 'Y' anomynous (string statt nummer)
+        });
+        function drawTable(data) {
+            for (var i = 0; i < data.length; i++) {
+                drawRow(data[i]);
+            }
+        }
+        var options = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        function drawRow( rowData ) {
+            var row = $("<tr>");
+            var callDate = new Date( rowData.call_date * 1000 );
+            $("#tbody").append(row);
+            row.append($("<td>" + callDate.toLocaleDateString(kivi.myconfig.countrycode, options)  + "</td>"));
+            row.append($("<td>" + rowData.crmti_status + "</td>"));
+            row.append($("<td>" + rowData.crmti_src + "</td>"));
+            row.append($("<td>" + rowData.crmti_dst + "</td>"))
+            row.append($("<td>" + rowData.crmti_caller_id + "</td>"))
+            row.append($("<td>" + rowData.crmti_caller_typ + "</td>"))
+            row.append($("<td>" + rowData.crmti_direction + "</td></tr>"))
+        };
+        function getCalls() {
+            $.ajax({
+                dataType: "json",
+                url: "jqhelp/call.php",
+                data: {action: 'getCallListComplete'},
+                success : function (data){
+                    console.log('OK',data);
+                    drawTable(data);
+                    $("#DataTable").trigger("update");
+                    $("#DataTable").trigger("appendCache");
+                },
+                error: function(rc1,rc2,rc3) {
+                    console.log('ERROR',rc1,rc2,rc3);
+                }
+            }).done(function (data){
+                    console.log('DONE',data);
+            });
+        };
+        getCalls();
+    });
+
+</script>
+<style>
+  table.tablesorter { width:auto; cursor:pointer; }
+  th.date { width: 155px }
+  th.status, th.id{ width: 70px }
+  th.source, th.dest { width: 200px; }
+  th.typ, th.dir { width: 50px; }
+  #myTable tr td { font-size: 1em !IMPORTANT; }
+
+</style>
+</head>
+
+<body>
+<?php
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+<div class="ui-widget-content">
+<h1 class="toplist  ui-widget  ui-corner-all tools content1" ><b>Anrufliste</b></h1><br>
+
+<div id="dialogFound"></div>
+<div id="dialogNotFound"></div>
+  <table id="DataTable" class="tablesorter">
+    <thead>
+      <tr>
+        <th class="date">date</th>
+        <th class="status">status</th>
+        <th class="source">source</th>
+        <th class="dest">destination</th>
+        <th class="id">caller_id</th>
+        <th class="typ">caller_typ</th>
+        <th class="dir"> direction</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+    </tbody>
+  </table>
+<?php echo $head['JQTABLE-PAGER']; ?>
+</div>
+<?php echo $menu['end_content']; ?>
+</body>
+</html>

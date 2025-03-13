@@ -1,0 +1,10 @@
+<br>
+Nach diesem Feld wird die Datenbankabfrage sortiert.<br>
+Bei mehreren Feldern sind diese durch Komma zu trennen.<br>
+<br>
+z.B.:<br>
+customernumber<br>
+transdate, customer_id<br>
+<br>
+Die Sortierung darf <b>nicht</b> im SQL-Befehl gemacht werden.<br>
+Wird &quot;ORDER BY&quot; im SQL angegeben, so ist dieses Feld <b>Pflicht</b>.

@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<title>CRM: Benutzer</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>Benutzereinstellungen</h2>
+<hr>
+Mehrere Reiter unterteile die verschiedenen Bereiche.<br><br>
+<span class='reiter'>Benutzer</span><br>
+Voreinstellungen die den Benutzer betreffen:<br>
+<table>
+<tr><td>Such-Tab</td><td>welches Suchfenster soll geöffnet werden</td></tr>
+<tr><td>Kd-Ansicht links</td><td>welche Zusatzinfos sollen im unteren Bereich angezeigt werden</td></tr>
+<tr><td>Kd-Ansicht rechts</td><td>welche Listen sollen im rechten Bereich angezeigt werden</td></tr>
+<tr><td>Suchtabelle</td><td>Firmensuche in einer oder in beiden Tabellen</td></tr>
+<tr><td>Etiketten</td><td>welches ist das Standardetikett</td></tr>
+<tr><td>Vertreter</td><td>hat zZ noch keine Bedeutung</td></tr>
+<tr><td>Mandantensignatur</td><td>nur die eigene oder nur die des Mandanten oder beide</td></tr>
+</table><br>
+<span class='reiter'>CRM</span><br>
+CRM-Oberfläche und EMAIL<br>
+<table>
+<tr><td>E-Mail-Server</td><td>von diesem Server werden Mails für die WV abgeholt</td></tr>
+<tr><td>Theme</td><td>Aussehen der CRM</td></tr>
+<tr><td>Termine</td><td>Kalenderzeit und Zeitraster</td></tr>
+<tr><td>Kalenderansicht</td><td>mit dieser Ansicht wird gestartet</td></tr>
+<tr><td>Presearch</td><td>Welche/welches Zeichen soll einer Suche vorangestellt werden<br>
+                          und soll Pre immer verwendet werden</td></tr>
+<tr><td>Grafikgröße</td><td>betrifft alle Umsatzgrafiken</td></tr>
+<tr><td>Kartendienst</td><td>URL des Dienstes mit Platzhalter<sup>*)</sup></td></tr>
+<tr><td>Leerzeichenersatz</td><td>für Kartendienst</td></tr>
+<tr><td>Autovervollst.</td><td>ab nn Zeichen und nn Millisekunden</td></tr>
+<tr><td>FirmaButton</td><td>Welche Buttons sollen in der Stammdatenansicht angezeigt werden</td></tr>
+<tr><td>Ext. Mailclient</td><td>CRM-Mail oder ein externen Desktopclient</td></tr>
+<tr><td>Fehler anzeigen</td><td>nur für Entwickler</td></tr>
+</table>
+<sup>*)</sup>
+TOSTREET, TOZIPCODE, TOCITY Zieldatenadresse<br> 
+FROMSTREET, FROMZIPCODE, FROMCITY Absenderdatenadresse-Benutzer (kann, dann Routing)<br>
+<br>
+<span class='reiter'>Sync</span><br>
+Datensynchronisation mit DAV-Server, z.B. Owncloud<br>
+zZ wird nur Adresse unterstützt.<br>
+<table>
+<tr><td>DAV-Server</td><td>komplette URL</td></tr>
+<tr><td>Name/Passwort</td><td>nötig für die Anmeldung</td></tr>
+<tr><td>erl. Errorcode</td><td>erlaubte Fehlercodes neben 201. Owncloud liefer z.B. 204 </td>
+<tr><td>Syncstatus</td><td>Welchen Status bekommen neue Adressen</td>
+</tr>
+<tr><td></td><td></td></tr>
+</table>
+<span class='knopf'>holen</span> holt die Daten vom Server<br>
+Dargestellt werden alle Adressen seit dem letzten Holen in einem neuen Dialog.<br>
+Dabei wird an Hand eines Keys oder einer UID versucht die Adresse in der Datenbank zu finden. 
+Bei Erfolg wird neben dem Namen je nach Syncstatus (0,1,2) der Adresse eine Checkbox (2) für update, &quot;no&quot; wenn der Status 1 ist 
+oder ein &quot;?&quot; bei Status 0 angezeigt, 
+Bei nicht gefundenen Adressen wird eine Auswahlbox mit den Tabelle angezeigt, wo die Adresse eingefügt werden soll. 
+Sind sie mit Ihrer Auswahl fertig, so klicken sie auf <span class='knopf'>anwenden</span>. Die selektierten Daten werden dann übernommen.<br>
+<br>
+<span class='knopf'>senden</span> überträgt alle Adressen mit entsprechendem Marker (Synstatus 1 oder 2).<br>
+<br>
+<span class='reiter'>Asterisk</span><br>
+Wird nur angezeigt, wenn der Server konfiguriert wurde. <br>
+Es besteht die Möglichkeit eine Testverbindung aufzubauen.<br>
+<br>
+<span class='reiter'>Umsatz</span><br>
+Hier werden die Umsätze der letzten 12 Monate des Benutzer angezeigt.<br>
+<br>
+<span class='reiter'>E-Mail</span><br>
+Ausgabe aller E-Mails, die der Benutzer über die CRM verschickt hat.<br>
+<br>
+<hr>
+Zurrück zu [<a class='wikil' href='AnwenderDokumentationLx-Office.html'>Hauptmenü</a>]<br>
+<a href="Javascript:self.close()">close</a>
+</body>
+</html>

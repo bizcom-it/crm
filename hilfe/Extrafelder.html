@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>CRM: Extrafelder</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>Extrafelder</h2>
+<hr>
+Für Kunden (C), Lieferanten (V) und Ansprechpartner (P) lassen sich eigene Eingabemasken einfach erstellen.<br>
+Diese liegen im CRM-Unterverzeichnis 'tpl/' unter den Namen extra[CVP].tpl. Die mitgelieferten dienen als Beispiele und können einfach angepasst werden. Im Quelltext sind die Stellen gekennzeichnet, die nicht verändert werden dürfen.<br>
+<br>
+Die Maske darf beliebig viele Eingabeelemente (Textfelder, Selectboxen, Radiobutton) enthalten.<br>
+Nach diesen Feldern kann auch gesucht werden.<br>
+<br>
+Verwenden der Elemente:<br>
+<table>
+<tr><td><b>input</b></td><td>&lt;input type='text' name='feldname' value='{feldname}'&gt;</td></tr>
+<tr><td><b>select</b></td><td>&lt;select name='feldname' '&gt;</td></tr>
+<tr><td><b>option</b></td><td>&lt;option value='Option1' {feldnameOption1}&gt;Optionstext 1</td></tr>
+<tr><td><b>option</b></td><td>&lt;option value='Option2' {feldnameOption2}&gt;Optionstext 2</td></tr>
+<tr><td><b>radio</b></td><td>&lt;input type='radio' name='feldname' value='J' {feldname_J}'&gt;</td></tr>
+<tr><td><b>radio</b></td><td>&lt;input type='radio' name='feldname' value='N' {feldname_N}'&gt;</td></tr>
+<tr><td><b>checkbox</b></td><td>&lt;input type='checkbox' name='feldname' value='1' {feldname_1}'&gt;</td></tr>
+</table>
+'feldname' ist ein beliebiger, eindeutiger Name, unter dem die Daten abgelegt werden. Der Feldname in geschweiften Klammern ist der Rückgabewert aus der Datenbank und wird vom Webserver vor der Ausgabe ersetzt.<br>
+Bei Selectboxen wird der Rückgabewert aus 'feldname' + 'value' gebildet. <br>
+Bei Radio und Checkbox aus 'feldname' + '_' + 'value'. <br>
+<br><br>
+[<a class='wikiw' href='AnwenderDokumentationLx-Office.html'>Startseite</a>]
+<br><center><a href="Javascript:self.close()">close</a></center>
+</body>
+</html>

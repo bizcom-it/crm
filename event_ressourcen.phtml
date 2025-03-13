@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $menu['javascripts'];
+    echo $head['CRMCSS'];
+    echo $head['BOXCSS'];
+    echo $head['THEME'];
+    echo $head['COLORPICKERCSS'];
+    echo $head['COLORPICKERJS'];
+    echo $head['JQTABLE'];
+    echo $head['JQBOX'];
+?>
+<script language="javascript" type="text/javascript" src="translation/event_category.lng"></script>
+<script>
+   var colors  = new Array('#FFFF0C','#FF7400', '#CDEB8B','#6BBA70','#006E2E','#C3D9FF','#0101DF','#4096EE','#356AA0','#FF0096','#DF0101','#B02B2C','#000000');
+   $( document ).ready( function(){
+        var language = kivi.myconfig.countrycode;   
+        var manager = 0;
+        $.ajax({                        //"Session"-Vars holen
+            url: 'jqhelp/calendar.php',
+            dataType: 'json',
+            data: { task:  'initCal', }
+        }).done(function(json) {
+            //var language    = (json['countrycode'])?json['countrycode']:'en';
+            var loginCRM    = json['loginCRM'];
+            manager     = json['manager'];
+            if ( manager ) {
+           	    $( '#main' ).show();
+           	    $( '#no' ).hide();
+            } else {
+           	    $( '#no' ).show();
+               	$( '#main' ).hide();
+                //manager = true;
+            }
+            $( ".lang" ).each( function(){
+                var key = $( this ).attr( "data-lang" );
+                $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG ERR'  );
+            });
+            $( document ).tooltip({ position: { my: "center bottom-10", at: "center top" } } )
+            if ( manager>0 ) {
+                $.ajax({                        //Kategorien holen
+                    url: 'jqhelp/event_category.php',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: { task:  'getResCategory'  },
+                }).done(function(categories) {
+                    categories.unshift( {value: 0, text: ""} );
+                    $( "#classes" ).selectBoxIt({
+                            theme:      "jqueryui",
+                            autoWidth:  true,
+                            showEffect: "fadeIn",
+                            showEffectSpeed: 400,
+                            height: "12",
+                            populate: categories,
+                    }); 
+                    $( '#savecat' ).hide();
+                    $( "#classes" ).change( function() {
+                        console.log('classes');
+                        if ( $( "#classes option:selected" ).val() == 0 ) {
+                            $( '#donewcat' ).show();
+                            $( '#savecat' ).hide();
+                        } else {
+                            $( '#donewcat' ).hide();
+                            $( '#savecat' ).show();
+                        }
+                    });
+                   
+                }) //end  Kategorien   
+            } //end if manage
+        });
+        //$( "#color" ).click( function(){
+        //        $( "#colorPick" ).toggle();
+        //})
+        $('#colorPick').colorPicker({           
+            columns: 13, // number of columns (optional)  
+            color: colors,
+            click: function(color){
+                    $('#color').val(color);
+                    $( "#colorPick" ).show(); //toggle();
+            }, 
+        }); 
+        $( '#getcat' ).button().click( function(){
+            console.log('get');
+            $.ajax({
+                url: 'jqhelp/event_category.php',
+                data: { task:  'getRessourcen', category: $( "#classes option:selected" ).val() },
+                dataType: 'json',
+                type: "POST",
+                success: function( data ) {
+                    var content = '';
+                    $( '#restable tr[group="restab"]').remove();
+                    $.each( data, function( i ){
+                        content  = '';
+                        content += '<tr class="verlauf" id="tr'+data[i].id+'" group="restab" onClick="showItem('+data[i].id+');">';
+                        content += '<td>' + data[i].id + '</td>';
+                        content += '<td>' + data[i].ressource + '</td>';
+                        content += '<td>' + data[i].color + '</td>';
+                        content += '<td>' + data[i].resorder + '</td>';
+                        content += '</tr>';
+                        $( '#restable tr:last' ).after(content);
+                    });
+                    $( '#restable' ).trigger('update');
+                },
+                error: function () {
+                    alert('Ajax Error');
+                }
+            });
+        });
+        $( '#clear' ).button().click( function(event) {
+            $( '#newid' ).val('');
+            $( '#newressource' ).val('');
+            $( '#color' ).val('');
+            $( '#newsort' ).val('');
+        });
+        $( '#save' ).button().click( function(event) {
+            if ( $( '#newressource' ).val() == '' ) return;
+            var category = $( "#classes option:selected" ).val()
+            var id       =  $( '#newid' ).val();
+            var ressource = $( '#newressource' ).val();
+            var color     = $( '#color' ).val();
+            var sort      = $( '#newsort' ).val();
+            $.ajax({
+                url: 'jqhelp/event_category.php',
+                data: { task:  'saveRessource', id: id , ressource: ressource, color: color, resorder: sort, category: category  },
+                type: "POST",
+                success: function( res ) {
+                    $( '#clear' ).click();
+                    if ( res ) $( '#getcat' ).click();
+                }
+            });
+        });
+        $( "#savecat, #donewcat" ).button().click( function(){
+            var newlable = $( '#newcat' ).val();
+            var selcat   = $( "#classes option:selected" ).val()
+            $.ajax({
+                url: 'jqhelp/event_category.php',
+                data: { task:  'saveResCat', id: selcat , name: newlable  },
+                type: "POST",
+                success: function( res ) {
+                    console.log("RES "+res+" Sel "+selcat+" "+newlable);
+                    if ( selcat > 0 ) {
+                        var sb = $("#classes").data("selectBox-selectBoxIt");
+                        sb._setText(sb.dropdownText,newlable);
+                    } else {
+                        $("#classes").data("selectBox-selectBoxIt").add({ value: res, text: newlable });
+                        $('#classes').data( "selectBox-selectBoxIt" ).selectOption(res);
+                    };
+                    $( '#newcat' ).val('');
+                    $( '#getcat' ).click();
+                },
+                error: function () {
+                    alert('Ajax Error');
+                }
+            });
+        });
+        $( "#calendar" ).button().click( function(){
+                window.location.href = "calendar.phtml";
+        });
+        $( '#restable' ).tablesorter({widthFixed: true, widgets: ['zebra'], widgetOptions : { zebra : [ "even", "odd" ]},debug: true ,
+                         headers: { 0: { sorter: false }, 1: { sorter: false },  2: { sorter: false }, 3: { sorter: false } } })
+    });
+    function showItem(id) {
+        var tr = $( '#tr'+id+' > td' );
+        $( '#newid' ).val(tr[0].outerHTML.slice(4,-5));
+        $( '#newressource' ).val(tr[1].outerHTML.slice(4,-5));
+        $( '#color' ).val(tr[2].outerHTML.slice(4,-5));
+        $( '#newsort' ).val(tr[3].outerHTML.slice(4,-5));
+        console.log('Color:'+$( '#color' ).val());
+        var tmp = $.inArray($( '#color' ).val(),colors);
+        if ( tmp > -1  ) {
+            console.log(colors[tmp]);
+            $( '#nocolor' ).hide();
+            $( 'div[style*="background-color:'+colors[tmp]+'"]' ).click()
+        } else {
+            $( '#nocolor' ).show();
+        }
+    }
+</script>
+<style>
+    .kathead { list-style-type: none; margin: 0; padding: 0.4em; padding-left: 2.5em; padding-bottom: 0.5em; width: 750px; height:50px; font-size: 1.4em; height: 18px; }
+    .label  {  position:absolute;  width: 200px; left:2.5em;  color: 666;}
+    .field1 {  position:absolute;  width: 400px; left:210px;  color: 666;}
+    .field2 {  position:absolute;  width: 200px; left:210px;  color: 666;}
+    .buttons { padding-left: 1.0em; padding-top: 0.5em;  ; padding-bottom: 0.5em;  }
+    #colorPick          { position:relative; top:-20px; left:450px; z-index: 1; }
+    
+</style>
+</head>
+<body>
+<?php 
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+<h1 class="toplist  ui-widget  ui-corner-all tools content1" onClick="help('AdminRessourcen');"><span class='lang' data-lang='RHEADLINE' ></span></h1><br>
+
+<div class="ui-widget-content" id='main' style="display: none; border:0px;" style='z-index: -10;'> 
+        <input type='hidden' id='newid'   name='newid'  > 
+        <input type='hidden' id='newsort' name='newsort'> 
+
+        <span class="kathead ">
+               <span class="lang" data-lang="CATEGORYS"></span>
+               <span class="buttons"><select id="classes" ></select></span>
+               <span class="buttons"><button id="getcat"   class="lang" data-lang="HOLEN"></button></span>
+               <span class='buttons'><input type="text" class="ui-widget-content ui-corner-all lang" name="newcat" id="newcat"></span> 
+               <span class="buttons"><button id="donewcat" class="lang" data-lang="NEWRES"></button></span>
+               <span class="buttons"><button id="savecat"  class="lang" data-lang="SAVERES"></button></span>
+        </span>
+        <br><br>
+        <span class="kathead ">
+                <span class="lang" data-lang="RESSOURCE"></span>
+                <input type="text" class="ui-widget-content ui-corner-all field1 lang" name="newressource" id="newressource"></li>
+        </span>
+        <br><br>
+        <span class="kathead ">
+                <span class="lang" data-lang="COLOR"></span>
+                <span>
+                <input type="text" class="ui-widget-content ui-corner-all field2 lang" name="color" id="color">
+                <span id="nocolor" style="display:none; color:red;"> * </span>
+                </span>
+                <span id="colorPick" style="display: none"></span>
+        </span>
+        <br><br>
+        <span class="kathead ">
+                <button id="clear" class="lang" data-lang="CLEAR"></button>
+                <button id="save"  class="lang" data-lang="SAVE"></button>
+        </span>
+        <br><br>
+        <span class="kathead ">
+            <table id="restable" class="tablesorter" style='margin:0px; margin-left:30px; width:800px; cursor:pointer;'>
+        	    <thead><tr><th>ID</th><th>Ressource</th><th>Farbe</th><th class="{ sorter: false }">Sort</th></tr></thead>
+        		<tbody>
+                </tbody>
+            </table>
+        </span>
+        <br>
+        <span class="kathead ">
+            <button id="calendar" class="lang" data-lang="CALENDAR"></button> 
+        </span>
+        <br>
+        <br>
+</div>
+
+<div id='no' style="display: none; z-index: -10;"><br>
+<p >Nur für Gruppen-Mitglieder mit Ressourcen-Recht</p>
+</div>
+
+<?php echo $menu['end_content']; ?>
+</body>
+</html>

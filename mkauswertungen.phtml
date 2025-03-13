@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $menu['javascripts'];
+    echo $head['CRMCSS'];
+    echo $head['BOXCSS'];
+    echo $head['THEME'];
+    echo $head['JQTABLE'];
+    echo $head['JQBOX'];
+?>
+<script language="javascript" type="text/javascript" src="translation/auswertungen.lng"></script>
+<script>
+    function getBerichte() {
+        $.ajax({
+            url: 'jqhelp/analysis.php',
+            type: "POST",
+            data: { task: "getBerichte" }
+        }).done(function(json) {
+            console.log(json);
+            //$( '#Bericht option' ).remove();
+            $( '#Bericht' ).selectBoxIt({
+                populate: $.parseJSON( json.trim() )
+            });
+            first = false;
+            $( '#Bericht' ).selectBoxIt("refresh");
+        });  //end getBerichte
+        console.log($( '#Bericht'));
+    };
+    function doHelp(was) {
+            $.ajax({                        //Hilfstexte holen
+                url: 'jqhelp/analysis.php',
+                type: "POST",
+                data: { task:  'helpText', label : was }
+            }).done(function(data) {
+                console.log(data);
+                $( '#info' ).html(data);
+            })
+    }
+    var first = true;
+    $( document ).ready( function(){
+        var language = kivi.myconfig.countrycode;    
+        getBerichte();
+        $( '.info' ).focus( function(wer) {
+            doHelp(wer.target.id);
+        });
+        //$( '#Bericht' ).selectBoxIt();
+        $.ajax({                        //"Session"-Vars holen
+                url: 'jqhelp/analysis.php',
+                dataType: 'json',
+                type: "POST",
+                data: { task:  'initBericht', }
+        }).done(function(json) {
+            //var language    = (json['countrycode'])?json['countrycode']:'en';
+            var loginCRM    = json['loginCRM'];
+         	$( '.ui-widget-content' ).show();
+         	$( '#no' ).hide();
+            /*var manager     = json['manager'];
+            if ( manager ) {
+         	       $( '.ui-widget-content' ).show();
+         	       $( '#no' ).hide();
+            } else {
+         	   	   $( '.ui-widget-content' ).hide();
+         	       $( '#no' ).show();
+            }*/
+            $( ".lang" ).each( function(){
+                var key = $( this ).attr( "data-lang" );
+                $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG ERR'  );
+            });
+            $( '#input' ).hide();
+        }) //end initBericht
+         
+        $( '#edit' ).button().click( function() {
+            var id  = $( '#Bericht option:selected' ).val();
+            console.log('Edit'+id);
+            if ( id == '- - - - - - - -' ) return;
+            console.log($( '#Bericht'));
+            $.ajax({
+                url: 'jqhelp/analysis.php',
+                dataType: 'json',
+                type: "POST",
+                data: { task:  'getFormData', bericht: id },
+            }).done(function(data) {
+                console.log(data);
+                console.log(data['data'].label);
+                $( '#input' ).show();
+                $( '#msg' ).empty().append(data['msg']);
+                $( '#bericht' ).val(data['data'].bericht);
+                $( '#id' ).empty().html(data['data'].id);
+                $( '#label' ).val(data['data'].label);
+                $( '#sql' ).val(data['data'].sql);
+                $( '#orders' ).val(data['data'].orders);
+                $( '#felder' ).val(data['data'].felder);
+                $( '#header' ).val(data['data'].header);
+                $( '#legend' ).val(data['data'].legend);
+                $( '#xaxis' ).val(data['data'].xaxis);
+                $( '#xlabel' ).val(data['data'].xlabel);
+                $( '#note' ).val(data['data'].note);
+            });
+        }); //end Button edit 
+         
+        $( '#save' ).button().click( function() {
+            var data = new Object();
+            data['bericht'] = $( '#bericht' ).val();
+            data['id']      = $( '#id' ).html();
+            data['label']   = $( '#label' ).val();
+            data['sql']     = $( '#sql' ).val();
+            data['orders']  = $( '#orders' ).val();
+            data['felder']  = $( '#felder' ).val();
+            data['header']  = $( '#header' ).val();
+            data['legend']  = $( '#legend' ).val();
+            data['xaxis']   = $( '#xaxis' ).val();
+            data['xlabel']  = $( '#xlabel' ).val();
+            data['note']    = $( '#note' ).val();
+            $.ajax({
+                url: 'jqhelp/analysis.php',
+                dataType: 'json',
+                type: "POST",
+                data: { task:  'saveFormData', data : data },
+            }).done(function(rc) {
+                console.log(data['bericht']+' gesichert');
+                console.log(rc['msg']);
+                $( '#msg' ).empty().append(rc['msg']);
+                if ( rc['msg'] == data['bericht']+' gesichert' ) {
+                    //$( '#Bericht' ).find('option').remove();
+                    //$( '#Bericht' ).selectBoxIt();
+                    //$( '#Bericht' ).data("selectBox-selectBoxIt").remove();
+                    //$( '#Bericht' ).selectBoxIt("refresh");
+                    $( '#new' ).button().click()
+                    $( '#input' ).hide();
+                    getBerichte();
+                }
+            });
+        }); //end Button save
+
+        $( '#copy' ).button().click( function() {
+            $( '#id' ).empty()
+            $( '#save' ).click();
+        }); //end Button copy
+         
+        $( '#delete' ).button().click( function() {
+            id = $( '#bericht' ).html();
+            $.ajax({
+                url: 'jqhelp/analysis.php',
+                dataType: 'json',
+                type: "POST",
+                data: { task:  'deleteFormData', id : id },
+                success: function(msg){
+                   console.log('RC:'+msg);
+                   $( '#msg' ).empty().append(msg); 
+                   if ( msg == 'Bericht '+id+' entfernt' ) {
+                       $( '#new' ).button().click()
+                       $( '#input' ).hide();
+                       getBerichte();
+                   }
+                }
+            }).done(function(msg) {
+                console.log('RC:'+msg);
+                $( '#msg' ).empty().append(msg); 
+                if ( msg == 'Bericht '+id+' entfernt' ) {
+                    $( '#new' ).button().click()
+                    $( '#input' ).hide();
+                    getBerichte();
+                }
+            }).fail(function(msg) {
+                console.log('Fail:'+msg);
+            }).always(function(msg) {
+                console.log('Always:'+msg);
+            })
+        }); //end Button delete
+
+        $( '#new' ).button().click( function() {
+            $( '#info' ).html('');
+            $( '#input' ).show();
+            $( '#msg' ).val('');
+            $( '#bericht' ).val('');
+            $( '#id' ).empty().append('0');
+            $( '#label' ).val('');
+            $( '#felder' ).val('');
+            $( '#sql' ).val('');
+            $( '#orders' ).val('');
+            $( '#legend' ).val('');
+            $( '#header' ).val('');
+            $( '#orders' ).val('');
+            $( '#xaxis' ).val('');
+            $( '#xlabel' ).val('');
+            $( '#note' ).val('');
+        }); //end Button new
+
+        $( '#exit' ).button().click( function() {
+            $( '#info' ).html('');
+            $( '#input' ).hide();
+            $( '#msg' ).empty();
+        }); //end Button new
+
+        //doHelp('auswertung');
+        //doHelp('auswertung');
+    }); //end document ready
+
+</script>
+<style>
+    .buttons { padding: 0.25em;  }
+    .infopage { font-size: 1.2em; };
+    td, th { padding: 0.5em 1em; }
+    #BerichtLabel { position:absolute; top:55px;  left:10px; }
+    #BerichtDrop  { position:absolute; top:50px;  left:75px; }
+    #msg        { position:absolute; top:80px;  left:10px; font-size:1.5em; font-weight:bold;}
+    #berichtlbl { position:absolute; top:110px;  left:10px; font-size:1.1em; }
+    #berichtfld { position:absolute; top:105px;  left:105px; }
+    #id         { position:absolute; top:110px;  left:385px; font-size:1.1em; }
+    #labellbl   { position:absolute; top:140px; left:10px; font-size:1.1em; }
+    #labelfld   { position:absolute; top:135px; left:105px; }
+    #felderlbl  { position:absolute; top:170px; left:10px; font-size:1.1em; }
+    #felderfld  { position:absolute; top:165px; left:105px; }
+    #sqllbl     { position:absolute; top:200px; left:10px; font-size:1.1em; }
+    #sqlfld     { position:absolute; top:195px; left:105px; }
+    #orderslbl  { position:absolute; top:300px; left:10px; font-size:1.1em; }
+    #ordersfld  { position:absolute; top:295px; left:105px; }
+    #headerlbl  { position:absolute; top:330px; left:10px; font-size:1.1em; }
+    #headerfld  { position:absolute; top:325px; left:105px; }
+    #legendlbl  { position:absolute; top:360px; left:10px; font-size:1.1em; }
+    #legendfld  { position:absolute; top:355px; left:105px; }
+    #xaxislbl   { position:absolute; top:390px; left:10px; font-size:1.1em; }
+    #xaxisfld   { position:absolute; top:385px; left:105px; }
+    #xlabellbl  { position:absolute; top:420px; left:10px; font-size:1.1em; }
+    #xlabelfld  { position:absolute; top:415px; left:105px; }
+    #notelbl    { position:absolute; top:450px; left:10px; font-size:1.1em; }
+    #notefld    { position:absolute; top:445px; left:105px; }
+    #exit       { position:absolute; top:540px; left:10px; }
+    #save       { position:absolute; top:540px; left:105px; }
+    #copy       { position:absolute; top:540px; left:195px; }
+    #delete     { position:absolute; top:540px; left:325px; }
+    #info       { position:absolute; top:55px;  left:650px; }
+    .ui-widget-content { height:520px; z-index:99; }
+</style>
+</head>
+<body>
+<?php 
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+<div class="ui-widget-content" style="height:722px; border:0px;">
+<h1 class="toplist  ui-widget  ui-corner-all  content1" onClick="help('Auswertungen');"><span class='lang' data-lang='HEADLINE'></span></h1><br>
+
+   <br>
+   <br>
+   <span id="BerichtLabel" data-lang='BERICHT' class='lang'></span> 
+   <span id="BerichtDrop">
+           <select id="Bericht" >
+           </select> 
+           <button id="edit"  class="lang buttons" data-lang="EDIT"></button>
+           <button id="new"   class="lang buttons" data-lang="NEW"></button>
+   </span>
+   <div id='msg'></div>
+   <div  id='input'>
+      <span id='berichtlbl'>ID-Auswertung:</span><span id='berichtfld'><input type='text' id='bericht' size='3' class='info'></span>
+      <span id='id'></span>                      
+      <span id='labellbl'>Titel:</span>          <span id='labelfld'><input type='text' size='40' id='label' class='info'></span>
+      <span id='felderlbl'>Zusatzfelder:</span>  <span id='felderfld'><input type='text' size='60' id='felder' class='info'></span>
+      <span id='sqllbl'>SQL:</span>              <span id='sqlfld'><textarea cols='70' rows='5' id='sql' class='info'></textarea></span>
+      <span id='orderslbl'>Sortiert:</span>      <span id='ordersfld'><input type='text' size='20' id='orders' class='info'></span>
+      <span id='headerlbl'>Header:</span>        <span id='headerfld'><input type='text' size='60' id='header' class='info'></span>
+      <span id='legendlbl'>Legende:</span>       <span id='legendfld'><input type='text' size='60' id='legend' class='info'></span>
+      <span id='xaxislbl'>Feld X-Achse:</span>   <span id='xaxisfld'><input type='text' size='20' id='xaxis' class='info'></span>
+      <span id='xlabellbl'>Bez. X-Achse:</span>  <span id='xlabelfld'><input type='text' size='40' id='xlabel' class='info'></span>
+      <span id='notelbl'>Beschreibung:</span>    <span id='notefld'><textarea cols='70' rows='5' id='note' class='info'></textarea></span>
+      <button id="save"   class="lang buttons" data-lang="SAVE"></button>
+      <button id="copy"   class="lang buttons" data-lang="SAVENEW"></button>
+      <button id="delete" class="lang buttons" data-lang="DELETE"></button>
+      <button id="exit"   class="lang buttons" data-lang="EXIT"></button>
+   </div>
+   <span id='info' class='infopage'></span>
+</div>
+<div id='no' style="display: none"><br><p class="listtop">Nur für Gruppen-Mitglieder mit Ressourcen-Recht</p></div>
+<?php echo $menu['end_content']; ?>
+</body>
+</html>

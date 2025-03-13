@@ -1,0 +1,2 @@
+<br>
+Dies Datenbank-Feld stellt die X-Achse dar. Es muß in der Abfrage vorkommen.

@@ -1,0 +1,26 @@
+        .ui-autocomplete-category {
+            font-weight: bold;
+            padding: .2em .4em;
+            margin: .8em 0 .2em;
+            line-height: 1.5;
+        }
+        #jui_dropdown {
+            height: 400px;
+        }
+        #jui_dropdown button {
+            padding: 3px !important;
+        }
+        #jui_dropdown ul li {
+            background: none;
+            display: inline-block;
+            list-style: none;
+        }   
+        .drop_container {
+            margin: 10px 10px 10px 10px ;
+            display: inline-block;
+        }   
+        .menu {
+            position: absolute;
+            width: 240px !important;
+            margin-top: 3px !important;
+        }  

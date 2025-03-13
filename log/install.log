@@ -1,0 +1,46 @@
+17.05.2017 19:49:34
+Installation: 2.4.0
+Verzeichnis dokumente : vorhanden
+Verzeichnis dokumente/tinte : vorhanden
+Verzeichnis tmp : vorhanden
+dokumente : ok
+dokumente/tinte : ok
+vorlage : ok
+inc/conf.php : ok
+tmp : ok
+Suchpfad: .:/usr/share/php:/usr/share/fpdf:/usr/share/jpgraph:/var/www/openkonto/crm/inc:/var/www/openkonto/crm/jqhelp
+Curl : ok
+MDB2: ok
+MDB2/Driver/pgsql: ok
+fpdf: ok
+fpdi: ok
+Mail: ok
+Mail/mime: ok
+jpgraph: ok
+Contact_Vcard_Build: Fehler
+Contact_Vcard_Parse: Fehler
+
+openkonto : gefunden
+14.09.2017 16:51:33
+Installation: 2.4.0
+Verzeichnis dokumente : vorhanden
+Verzeichnis dokumente/obiz : vorhanden
+Verzeichnis tmp : vorhanden
+dokumente : ok
+dokumente/obiz : ok
+vorlage : ok
+inc/conf.php : ok
+tmp : ok
+Suchpfad: .:/usr/share/php:/usr/share/fpdf:/usr/share/jpgraph:/var/www/openkonto/crm/inc:/var/www/openkonto/crm/jqhelp
+Curl : ok
+MDB2: ok
+MDB2/Driver/pgsql: ok
+fpdf: ok
+fpdi: ok
+Mail: ok
+Mail/mime: ok
+jpgraph: ok
+Contact_Vcard_Build: Fehler
+Contact_Vcard_Parse: Fehler
+
+openkonto : gefunden

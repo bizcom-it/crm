@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<title>CRM: Etiketteneditor</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<a name="top"></a>
+<h2>Etiketten-Editor</h2>
+<hr>
+Hier können verschiedenen Etikettenvormate definiert werden.<br>
+Im linken Bereich wird das Etikettenformular definiert. Als  erstes wird die Größe der Etikettenträger ausgewählt. Die Angabe "Metric" ist für die folgenden Angaben wichtig. Standard ist "mm". <br>
+In Zeile zwei werden die Ränder zwischen dem ersten Etikett und dem Blatt angegeben.<br>
+Danach erfolgt die Angabe wieviel Zwischenraum zwischen den Etiketten ist.<br>
+Nun geben Sie Breite und Höhe eines Etiketts ein.<br>
+Als letztes erfolgt die Anzahl der Etiketten neben- und untereinander. Im Ausdruck werden die Etiketten dann als Radio-Button angezeigt und können so ausgewählt werden.<br>
+<br>
+Im rechten Bereich wird der Inhalt eines Etiketts definiert. Gestartet wird mit 6 leeren Zeilen. Im mittleren Bereich kann die Anzahl verändert werden.<br>
+Vor jeder Zeile kann die Fontgröße gewählt werden, im Eingabefeld kann ein fester Text und/oder Platzhalter eingegeben werden.<br>
+Platzhalter werden in Großbuchstaben eingegeben und durch "%" (Prozent) Zeichen eingefasst: %PLATZHALTER% <br>
+Zwei Sonder-Zeichen steuern ob und was in einer Zeile gedrucht wird.<br>
+Beginnt die Zeile mit einem "!" (Ausrufezeichen), so wird die Zeile nur ausgedrucht, wenn die Platzhalter danach einen Inhalt haben.<br>
+Mehrere Platzhalter können durch ein "|" (Pipe) angegeben werden. Das Zeichen dient als "oder". z.B.:<br>
+!%KONTAKT%|%NAME2%<br>
+Die Zeile wird nur gedruckt, wenn entweder ein Kontakt oder der zweite Name belegt ist.<br>
+Platzhalter:
+<table>
+<tr><td>ANREDE</td><td>Anrede</td></tr>
+<tr><td>NAME</td><td>Name der Firma</td><td> Vor- + Nachname bei Ansprechpartner</td></tr>
+<tr><td>NAME1</td><td>Name der Firma</td><td> Nachname bei Ansprechpartner</td></tr>
+<tr><td>NAME2</td><td>Zusatzbezeichnung der Firma</td><td> Vorname bei Ansprechpartner</td></tr>
+<tr><td>STRASSE</td><td>Strasse</td></tr>
+<tr><td>PLZ</td><td>Postleitzahl</td></tr>
+<tr><td>ORT</td><td>Ortsname</td></tr>
+<tr><td>LAND</td><td>Land</td></tr>
+<tr><td>KONTAKT</td><td>Hauptkontakt</td></tr>
+<tr><td>TEXT</td><td>Freier Text im Pop-Up</td></tr>
+</table>
+Im mittleren Bereich können verschiedene Aktionen durchgeführt werden. Ein gespeichertes Etikett abrufen um es zu bearbeiten.
+Das Etikett mit einem neuen Namen als "Neu" speichern oder unter dem gleichen Namen "speichern". Mit "testen" wird der Bogen mit den Platzhaltern erzeugt.
+<br><br>
+[<a href="#top">nach Oben</a>]<br />
+<br>
+Seiten die hierher zeigen [<a class='wikiw' href='AnwenderDokumentationLx-Office.html'>Startseite</a>]
+<br><center>[<a href="javascript:self.close();">Fenster schließen</a>]>
+</body>
+</html>

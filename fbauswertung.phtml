@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<?php
+    require_once("inc/stdLib.php");
+    $menu = $_SESSION['menu'];
+    $head = mkHeader();
+    echo $menu['stylesheets'];
+    echo $menu['javascripts'];
+    echo $head['CRMCSS'];
+    echo $head['BOXCSS'];
+    echo $head['THEME'];
+    echo $head['JQTABLE'];
+    echo $head['JQBOX'];
+    echo $head['JQPRINT'];
+
+?>
+<script language="javascript" type="text/javascript" src="translation/fahrtenbuch.lng"></script>
+<script>
+    var loginCRM    = 0;
+    var DatumStart_ = '';
+    var DatumStop_  = '';
+    var Fahrzeug_   = '';
+
+    $( document ).ready( function(){
+        var language    = kivi.myconfig.countrycode;    
+        var initOptions = { theme : 'blue' };
+
+        $.ajax({                        //"Session"-Vars holen
+                url: 'jqhelp/fahrtenbuch.php',
+                dataType: 'json',
+                type: "POST",
+                data: { task:  'initUser', }
+        }).done(function(json) {
+            console.log(json);
+            loginCRM    = json['loginCRM'];
+            $( '#printbtn' ).hide();
+        }) 
+         
+        $.ajax({
+            url: 'jqhelp/fahrtenbuch.php',
+            type: "POST",
+            data: { task: 'getUsers' },
+        }).done(function(data) {
+            console.log('getUser');
+            console.log(data);
+            console.log(loginCRM);
+            $( '#Fahrer' ).selectBoxIt({
+                populate: $.parseJSON( data.trim() )
+            });
+            $( '#Fahrer' ).data("selectBox-selectBoxIt").selectOption(loginCRM);
+        });
+        $( '#Fahrer' ).on('change',function() {
+            var id = this.value ;
+            console.log(id);
+            loginCRM = id;
+            $( '#datatable tbody' ).empty();
+        });
+        //$("#printable").find('.print').on('click', function() {
+        $( "#printbtn").on('click', function() {
+            var jetzt = new Date();
+            console.log("Drucken");
+            $( '#msg' ).empty().append('Druck wird angestoßen');
+            $("#printable").print({
+                //globalStyles : false,
+                noPrintSelector : ".avoid-this",
+                append : "Auswertung vom "+jetzt.getDay()+'.'+jetzt.getMonth()+'.'+jetzt.getFullYear()+"<br/>", 
+                prepend : "<br/>Fahrtenbuch",
+                title: 'Fahrtenbuch',
+                doctype: '<!doctype html>',
+                mediaPrint : true,
+                deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+            });
+        });
+        $( '#datatable' ).tablesorter({widthFixed: false, widgets: ['zebra'], widgetOptions : { zebra : [ "even", "odd" ]},debug: true });
+
+        $( ".lang" ).each( function(){
+            var key = $( this ).attr( "data-lang" );
+            $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG ERR'  );
+        });
+
+
+        $( "#DatumStart" ).datepicker($.datepicker.regional[ "de" ]);
+        $( "#DatumStop" ).datepicker($.datepicker.regional[ "de" ]);
+        
+        $( '#suchen' ).button().click( function() {
+            console.log('Suchen');
+            DatumStart_       = $( '#DatumStart' ).val();    
+            DatumStop_        = $( '#DatumStop' ).val();    
+            Fahrzeug_         = $( '#Fahrzeug' ).val();   
+            if ( DatumStop_ != '' && DatumStart_ >= DatumStop_ ) { console.log('Datum'); alert('Endedatum muß größer oder Leer sein.'); return; };
+            $.ajax({
+                    url: 'jqhelp/fahrtenbuch.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { task:  'suchen', DatumStart: DatumStart_, DatumStop: DatumStop_, Fahrzeug: Fahrzeug_, Fahrer: loginCRM},
+                }).done(function(json) {
+                      if ( json ) {
+                          $( '#DatumStart' ).val(''); 
+                          $( '#DatumStop' ).val('');  
+                          $( '#Fahrzeug' ).val('');  
+                          $( '#msg' ).empty();
+                          $( '#kmgesamt' ).empty().html(' Gesamt KM: '+json['kmgesamt']);
+                          $( '#datatable tbody' ).empty().append(json.tabelle);
+                          $( '#datatable').trigger('update');
+                          $( '#printbtn' ).show();
+                      } else {
+                          $( '#msg' ).empty().append('Nichts gefunden');
+                          $( '#datatable tbody' ).empty();
+                          $( '#datatable').trigger('update');
+                          $( '#printbtn' ).hide();
+                      }
+                })
+        });
+    }); //end document ready
+    function delRow(id) {
+        var text = $( '#row'+id ).text();
+        console.log(text);
+        if ( confirm(text+"\n"+'Eintrag löschen?') ) {
+            $.ajax({
+                    url: 'jqhelp/fahrtenbuch.php',
+                    type: 'POST',
+                    data: { task:  'delete', ID:id},
+            }).done(function(rc) {
+                $('#msg' ).empty().append('Eintrag gelöscht');
+                $.ajax({
+                    url: 'jqhelp/fahrtenbuch.php',
+                    type: 'POST',
+                    data: { task:  'suchen', DatumStart: DatumStart_, DatumStop: DatumStop_, Fahrzeug: Fahrzeug_, Fahrer: loginCRM},
+                }).done(function(json) {
+                      if ( json) {
+                          $( '#datatable tbody' ).empty().append(json);
+                          $( '#datatable').trigger('update');
+                          $( '#printbtn' ).show();
+                      } else {
+                          $( '#msg' ).append(' Nichts gefunden');
+                          $( '#datatable tbody' ).empty();
+                          $( '#datatable').trigger('update');
+                          $( '#printbtn' ).hide();
+                      }
+                })
+            });
+
+        } else {
+            return;
+        };
+    }
+</script>
+
+</head>
+<body>
+<?php 
+    echo $menu['pre_content'];
+    echo $menu['start_content'];
+?>
+<div class="ui-widget-content" style="height:722px; border:0px;">
+<h1 class="toplist  ui-widget  ui-corner-all content1" onClick="help('Fahrtenbuch');"><span class='lang' data-lang='HEADLINE'></span></h1>
+ [<a href='fahrtenbuch.phtml'>zur Dateneingabe</a>]<br><br>
+    <span class='inline'>
+        <span id='msg' style='font-size:14px; font-weight: bold; color:red'>neue Suche</span><br>
+        <span id="Dates">
+             <table>
+             <tr><td><span id="UserLabel" data-lang='USER' class='lang'></span></td>
+                 <td><span data-lang='DATESTART'    class='lang'></span></td>
+                 <td><span data-lang='DATESTOP'     class='lang'></span></td>
+                 <td><span data-lang='AUTO'         class='lang'></span></td>
+                 <td></td></tr>
+             <tr><td><span id="UserDrop">
+                         <select id="Fahrer" >
+                         </select> 
+                     </span>
+                 </td>
+                 <td><input type="text"  id="DatumStart"      size='10'></td>
+                 <td><input type="text"  id="DatumStop"       size='10'></td>
+                 <td><input type="text"  id="Fahrzeug"        size='10'></td>
+                 <td><button id="suchen"  class="lang buttons" data-lang="SUCHE"></button></td></tr>
+            </table> 
+        </span>
+    </span>
+    <br><button id='printbtn' class="print"> drucken </button><span id='kmgesamt'></span><br>
+    <div id="printable">
+    <table id='datatable' class='tablesorter' style='margin:0px; cursor:pointer; border:0px;'>
+        <thead>
+        <tr><th><span data-lang='DATE'    class='lang'></th><th><span data-lang='AUTO'    class='lang'></span></th>
+            <th><span data-lang='START'   class='lang'></span></th><th><span data-lang='STOP'    class='lang'></span></th>
+            <th><span data-lang='KMSTART' class='lang'></span></th><th><span data-lang='KMSTOP'  class='lang'></span></th>
+            <th><span data-lang='GRUND'   class='lang'></span></th></tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>   
+    </div>
+</div>
+<?php echo $menu['end_content']; ?>
+</body>
+</html>

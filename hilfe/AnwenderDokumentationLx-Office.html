@@ -1,0 +1,256 @@
+<html>
+	<head>
+		<title>CRM: AnwenderDokumentation</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>AnwenderDokumentation</h2>
+<hr>
+[<a name='Anfang und Anmelden' class='wikil'>Anfang und Anmelden</a>]<br>
+<br>
+Die CRM hat keine eigene Anmeldung, da es Bestandteil von openkonto ist. Melden Sie sich ganz normal mit Ihrem Benutzer und Kennwort unter:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;http://localhost/&lt;pfad zu openkonto&gt;/login.pl<br>
+im den Browser an. Ist die CRM korrekt installiert, finden Sie einen Menüpunkt CRM.<br>
+<br>
+<h3>Die einzelnen Menüpunkte:</h3>
+<br>
+
+[<a name='Suche' class='wikil'>Suche</a>]<br>
+<br>
+Die Suche ist auf drei Reiter verteilt.:<br>
+<hr>
+<a name='Schnellsuche' class='reiter'>Schnellsuche</a><br>
+<br>
+Die [<a href='Suche.html#Schnellsuche' class='wikil'>Schnellsuche</a>] bietet ein Eingabefenster an. Um eine Adresse zu suchen, geben Sie hier einen Namen oder eine Telefonnummer ganz oder nur zu einem Teil ein, dann drücken Sie "Enter" oder klicken auf "Adresse". Das Ergenis wird nun im Hauptfenster angezeigt. Die Schnellsuche kann mit Jokern arbeiten. Dabei gilt "?" und "_" für ein beliebiges Zeichen, "*" und "%" für beliebige Zeichenfolgen. Jede Suche wird automatisch um "%" ergänzt.<br>
+<br>
+Ein vorangehendes Jokerzeichen kann für jeden Benutzer fest eingestellt werden unter dem Menüpunkt "CRM", "Benutzer", im Feld "PreSearch".<br>
+<br>
+Wollen Sie hingegen einen Beitrag in einem Kontaktverlauf suchen, klicken Sie auf den Knopf "Kontaktverlauf". Die Ergebnisse werden in einem Popup-Fenster dargestellt.<br>
+<br>
+<a name='Firmen' class='reiter'>Firmensuche</a><br>
+<br>
+Da die CRM die gleiche Datenbankinstanz wie die ERP benutzt sind die Kundendaten identisch. Nur sind die Eingabemasken und die Suchfuntionen hier besser gelöst. Auch können beliebig viele Kontakte zu jedem Kunden bzw. Lieferanten gepflegt werden. Da die Datensätze bei Kunden und Lieferanten identisch sind, gibt es nur eine Suchmaske für beide, sie unterscheiden sich nur in der Richtung des Warenflusses.<br>
+Es kann gleichzeitig in beiden Tabellen gesucht werden, aber auch gezielt in einer Tabelle. Mit einem Klick auf [<a class='wikil' href='Suche.html#Firmensuche'>Firmensuche</a>] kommt man in die Suchmaske. <br>
+<br>
+<a name='Personen' class='reiter'>Personensuche</a><br>
+<br>
+Mit einem Klick auf [<a class='wikil' href='Suche.html#Personensuche' >Personensuche</a>] kommt man in die Suchmaske für Personen. Diese Maske ist den anderen Msken sehr ähnlich, ist aber auf die Eigenschaften der Personen zugeschnitten.<br> Personen können in der Anwendung keinen Umsatz generieren. Eine Person kann <b>einer</b> Firma zugeordnet werden. Es können aber beliebig viele Personen einer Firma zugeordnet werden.<br>
+<hr>
+<br>
+
+[<a name='Extrafelder' href='Extrafelder.html' class='wikil'>Extrafelder</a>]<br>
+<br>
+Für jeden Adresstyp (Kunde, Lieferant, Ansprechpartner) kann mit einfachen Mitteln eine eigene Datenmaske erstellt werden. Beispiele werden mitgeliefert und können mit schon geringen HTML-Kenntnissen angepasst werden. Eine Programmierung oder Datenbankänderung ist nicht nötig.<br>
+Nach allen Feldern der Maske kann auch gesucht werden. Bei Firmen dann aber nicht in beiden Tabellen suchen, da sonst die Möglichkeit ausgeblendet wird.
+<br>
+<hr>
+<br>
+
+[<a name='erfassen' class='wikil'>Erfassen</a>]<br>
+<br>
+Hier verbergen sich die Aufrufe für die Erfassungsmasken von [<a class='wikil' href='FirmenEingebenEditieren.html'>Kunde, Lieferant</a>] und [<a class='wikil' href='PersonenEingebenEditieren.html'>Personen</a>]. Die beiden Erstgenannten rufen wieder die gleiche Maske auf, jedoch mit unterschiedlichem Parameter. <br>
+<br>
+<br>
+
+[<a name='Kalender' href='Kalender.html' class='wikil'>Kalender</a>]<br>
+<br>
+Der alte Terminkalender wurde durch einen neuen, modernen Kalender mit Ressourcenverwaltung ersetzt.<br>
+<br>
+<br>
+
+[<a name='Auftragschance' href='Auftragschance.html' class='wikil'>Auftragschance</a>]<br>
+<br>
+Hier bewerten Sie die Chance auf einen Auftrag mit einem Kunden. Suchen Sie zunächst den Kunden, indem Sie einen Teilbegriff eingeben und auf die Lupe klicken. In Schlagzeile geben Sie einen kurzen, prägnanten Text ein. Füllen Sie noch den Betrag, das Zieldatum, die aktuelle Chance in Prozent und den Status aus. Als letztes beschreiben Sie den Auftrag genauer. Das grüne Häckchen speichert die Einagben.<br>
+Um eine Auftragschance zu suchen, geben Sie in den Felder entsprechende Suchbegriffe ein und klicken Sie auf die Lupe am unteren Rand. Danach klicken Sie einfach auf einen der Treffer. Um eine Zeilen zu ändern, klicken Sie einfach in das weisse Feld der entsprechenden Zeile.<br>
+Auftragschancen können auch bei den Firmenstammdaten unter dem Reiter "Umsatz" gesucht werden.<br>
+<br>
+<br>
+
+[<a name='Wiedervorlage' href='Wiedervorlage.html' class='wikil'>Wiedervorlage</a>]<br>
+<br>
+Die Wiedervorlage ist eine Eingabemaske in der zu erledigende Vorgänge mit verschiedenen Dringlichkeiten bis zur Abarbeitung erinnern.<br>
+<br>
+Man kann über das Feld "CRM-User" die Wiedervorlage an einen Kollegen abgeben, und/oder über das Feld "Zugewiesen an" mit einer Person oder Firma verknüpfen. Diese Vorlage erscheint als ein Eintrag in den Kundendaten oder Kontakten. Über den Button "Durchsuchen" kann man ein Dokument hochladen, das dann als Link darunter erscheint. In dem Feld "Dokumentenbeschreibung" kann man eine Gedankenstütze dazu eingeben.<br>
+<br>
+Die Kontaktarten werden vor dem Betreff durch verschiedene Farben ausgedrückt. Die Zahl, in dem duch die "Kontaktart" farbig dargestelltem Feld, ist die "Priorität". Die Farben der Kontaktart sind:<br>
+<br>
+gelb   =  Telefon<br>
+<br>
+grün   =  eMail<br>
+<br>
+blau   =  Fax/Brief<br>
+<br>
+lila   =  Persönlich<br>
+<br>
+rot    =  Datei<br>
+<br>
+Durch den Button "sichern" wird das Ganze gespeichert und erscheint in dem Fenster.<br>
+<br>
+Nach der Bearbeitung einfach die "Priorität" auf "Erledigt" setzen und "sichern".<br>
+<br>
+<br>
+
+[<a name='EMail' href='EMail.html' class='wikil'>E-Mail versenden</a>]<br>
+<br>
+In diese Maske kommt man über das Menü "eMail" oder einem Maillink bei einer Adresse.<br>
+<br>
+In die Felder "An:" und "CC:" kann/können die Adresse/n direkt eingegeben werden. Die Autoverfollständigung beginnt ab einer Menge Zeichen mit der Suche in der Datenbank und schlägt eine begrenzte Treffermenge vor. Man kann auch Jockerzeichen, "_" für genau <strong>ein</strong> Zeichen und "%" für eine beliebige Zeichenfolge, mehrfach im Suchbegriff verwenden. <br>
+<br>
+Mit dem Versenden wird die Mail einem Kontakt zugeordnet, wenn es ihn gibt. Sie erscheint als neuer "Threat" in dem Verlauf des Kontaktes.<br>
+<br>
+<br>
+
+[<a name='WissensDB' href='WissensDB.html'  class='wikil'>WissensDB</a>]<br>
+<br>
+Anzeige von Informationen (Produktinformationen, Verfahrensweisen) für die Mitarbeiter.<br>
+<br>
+<br>
+
+[<a name='Notizen' class='wikil'>Memo</a>]<br>
+<br>
+Hier haben Sie die Möglichkeit kurze Notizen zu speichern. Geben Sie dazu zunächst einen prägnante Schlagzeile ein und dann im Feld darunter den eigentlichen Text. Gespeichert werden die Notizen mit dem Knopf "sichern".<br>
+Die Schlagzeilen der gespeicherten Notizen werden Chronologisch darüber aufgelistet. Ein klick auf die Schlagzeile &aouml;ffnet die Notiz im Eingabefenster.<br>
+Der Knopf "Pop Up" öffnet das Notizen-Fenster in einem neuen Fenster, damit es immer sichtbar ist.<br>
+<br>
+<br>
+
+[<a name='Etiketten' href='Etikett.html' class='wikil'>Etiketten</a>]<br>
+<br>
+In den Stammdatenmasken von Firmen und Personen gibt es die Möglickheit ein Etikett aus den Daten zu erstellen.<br>
+Hier wird nun die Möglichkeit geboten, Etiketten unabhängig von den Stammdaten zu erstellen.<br>
+<br>
+<br>
+
+[<a name='Dokumente' href='Dokumente.html' class='wikil'>Dokumente</a>]<br>
+<br>
+In den Stammdatenmasken von Firmen und Personen gibt es die Möglickheit Dokumente zu verwalten.<br>
+Hier ist der Startpunkt auf der obersten Verzeichnisebene des Mandanten. <br>
+<br>
+<br>
+
+[<a name='Zeiterfassung' href='TimeTrack.html' class='wikil'>Zeiterfassung</a>]<br>
+<br>
+Zu jedem Kunden können verschiedene Projekte angelegt werden. Diese habe i.d.R. eine Zeitachse, eine Stundenvorgabe und ein Budget.<br>
+Jeder Benutzer kann seine Zeit und sein Verbrauchsmaterial auf dieses Projekt buchen. Damit wird ein Überblick gewährt. Aus den Buchungen kann ein Auftrag für die ERP generiert werden.<br>
+<br>
+<br>
+
+
+[<a name='Auswertungen' href='Auswertungen.html' class='wikil'>Auswertungen</a>]<br>
+<br>
+Hier werden verschiedene Auswertungen angeboten. Die Ergebnisse können sowohl als Text, als auch als Grafik dargestellt werden. 
+Ebenso wird ein Download der Daten angeboten<br>
+<br>
+<br>
+
+<h4>Dienstleistungen:</h4>
+<hr>
+
+[<a name='Wartungsvertrag' class='wikil'>Wartungsvertrag</a>]<br>
+<br>
+Mit einem Klick auf "Wartungsvertrag" kommt man in das Fenster "Wartungsverträge suchen". Es steht sofort die Suchmaske bereit. Es kann die Vertragsnummer oder eine Teilnummer eines Wartungsvertrages eingegeben werden. Z.B. 10 . Es werden alle Wartungsverträge die die Nummer 10 enthalten angezeigt. Wenn es nur einen mit der Teilnummer 10 gib wird dieser sofort in dem Fenster [<a class='wikil' href='WVEingebenEditieren.html'>Verträge eingeben/editieren</a>] angezeigt.<br>
+<br>
+Mit dem Untermenü "Wartungsvertrag---erfassen" kommt man in das Fenster [<a class='wikil' href='WVEingebenEditieren.html'>Wartungsverträge eingeben/editieren</a>].<br>
+<br>
+[<a name='Maschinen' class='wikil'>Maschinen</a>]<br>
+<br>
+Mit einem Klick auf "Maschinen" kommt man in die Suchmaske [<a class='wikil' href='MaschineInfoEdit.html'>Maschine info/edit</a>]. In ihr kann man einen Teil der Serien oder Artikelnummer eingeben und den Button "suchen" anklicken, dann werden der oder die Treffer zur Auswahl angezeigt. <br>
+<br>
+Über das Submenü "Service-&gt;Maschienen---erfassen" kommt man in das Fenster [<a class='wikil' href='MaschinenEingebenEditieren.html'>Maschinen eingeben/editieren</a>].<br>
+<hr>
+<br>
+
+<h4>[<a name='Admin' class='wikil'>Admin</a>]</h4>
+Administrative Arbeiten für die CRM<br>
+<hr>
+<br>
+
+[<a name='Dokumentenvorlage' href='Dokumentvorlagen.html' class='wikil'>Dokumentenvorlage</a>]<br>
+<br>
+Wiederkehrende Dokumente mit standartisierten Inhalten als Dokumentvorlagen erstellen und verwalten.<br>
+<br>
+
+[<a name='Etiketten' href='Etiketten.html' class='wikil'>Etiketten</a>]<br>
+<br>
+In der Maske Etiketten-Editor hat man die Möglichkeit die einem überall begegnenden Etiketten zu erstellen. Dazu braucht man ersteinmal das Format, in dem die zubedruckenden Etiketten vorliegen. Dieses Format ist in den "Seitendefinitionen" unter "Seitengröße" einzustellen, dann kann man die Maßeinheiten einstellen. Unter den "Seitenrändern" werden die gemessenen Maße vom Rand bis zum Etikett in der gewählten Maßeinheit eingestellt. Unter "Abstände" werden die Zwischenräume der Etiketten in der Waagrechten (Spalten) und Senkrechten (Zeilen) Richtung eingetragen. Unter der "Größe der Aufkleber" ist die Etikettengröße einzugeben und unter der "Anzahl der Aufkleber" die Art der Bestückung des Formats mit den Etiketten.<br>
+<br>
+Unter dem 3ten Bereich "Texte für Aufkleber" kann man vordefinierte Labels erstellen. Dazu sind eventuelle Leerzeilen für die Übersichtlichkeit zu beachten. In dem Pulldown-menü unter "Fonts" kann die Größe der Schrift für jede Zeile eingestellt werden. Eine neue Zeile erzeugt man mit dem Button "mehr Textzeilen" unter dem Bereich "Aktionen". Mit dem Button "testen" kann das Ergebnis am Bildschirm angezeigt werden. Für das automatische Erstellen mit den Kontaktdaten wird auf die Datenbank zugegriffen. Die gebräuchlisten Platzhalter hierfür werden in den Bereichen sein:<br>
+<br>
+<pre> Für Firmendaten:
+ %ANREDE% (Firma) %NAME% (Firmenname) %NAME2% (Zusatzbezeichnung) %STRASSE%
+ %PLZ% %ORT% %KONTAKT% (Name der Kontaktperson in der Firma)
+</pre><br>
+<br>
+<pre> Für Personendaten:
+ %ANREDEPERS% (Anrede f. Person) %TITLE% (Titel) %NAMEPERS% (Name der Kontaktperson)
+ %STRASSEPERS% (Straße der Person) %PLZPERS% (PLZ der Person) %ORTPERS% (Wohnort der Person)
+</pre><br>
+Nun kann man als Namen für das erstellte Label in dem Feld über "sichern als neu" z.B. Firma, Privat oder je nach Bedarf das Label speichern durch das klicken auf den Button "sichern als neu". Wird das Label verbessert oder umgestaltet den Button "sichern" verwenden. Die verschiedenen Labels können in dem Pulldown-menü ausgewählt und über den Button "lade" angezeigt und bearbeitet werden.<br>
+<br>
+<br>
+
+[<a name='TerminKategorien' class='wikil'>Terminkategorien</a>]<br>
+Kategorien für den Kalender erstellen. Jeder Kategorie kann eine Farbe zugeordnet werden.<br>
+<br>
+<br>
+
+[<a name='Ressourcen' class='wikil'>Ressourcen</a>]<br>
+Beliebieg viele Ressourcenkategorienen mit beliebieg vielen Einträgen werden hier verwaltet.<br>
+<br>
+<br>
+
+[<a name='Mitteilungen' class='wikil'>Nachrichten</a>]<br>
+<br>
+Hier kann man Mitteilungen zu einer Firma einstellen, die in den Firmendaten mit ausgeben werden sollen.<br>
+<br>
+In dem ersten Feld kann man mit Platzhaltern ( _ für ein Zeichen und % für beliebige Zeichen) und Buchstaben nach der Firma suchen. Nach dem Auswählen der Firma kann man vorhandene Mitteilungen über den Button "holen" im Feld "eingestellte Mitteilungen:" anzeigen und dort bearbeiten bzw. löschen. Wichtig zum Anzeigen von schon eingestellten Meldungen ist das klicken auf den Button "suchen" und "übernehmen", da bei der Browservervollständigung erst der Server darüber kontaktiert werden muß.<br>
+<br>
+Wenn eine Firma durch "übernehmen" ausgewählt ist kann eine Mitteilung über sie eingestellt werden. Zu der Mitteilung kann eine Priorität ausgewählt werden. Die Priorität "1" läßt die Mitteilung in einer roten blinkenden Schrift erscheinen. Die Priorität "2" wird in schwarzer Schrift blinkend und die Priorität "3" in schwarzer Schrift dargestellt. Es wird die wichtigste Priorität angezeigt. Durch den Button "sichern" wird die Mitteilung gespeichert.<br>
+<br>
+<br>
+
+[<a name='Mandant' class='wikil'>Mandant</a>]<br>
+<br>
+Hier werden Einstellungen getroffen, die für den gesamten Mandanten gültig sind.<br>
+<br>
+<br>
+
+[<a name='Benutzer' href='User.html' class='wikil'>Benutzer</a>]<br>
+<br>
+In dem Menü "Benutzer" kann der User seine eigenen Daten einpflegen. In diesen Benutzer Stammdaten können z.B. der Vertreter oder das Mailfach bestimmt werden.<br>
+Auch das Aussehen und Verhalten der CRM.<br>
+<br>
+<br>
+
+[<a name='Gruppen' href='Gruppen.html' class='wikil'>Gruppen</a>]<br>
+<br>
+Hier können priviligierte User Gruppen anlegen, diesen Gruppen Usern zuordnen und wieder löschen.<br>
+Mit den Gruppen können Berechtigungen auf Adressen vergeben werden.<br>
+<br>
+<br>
+
+[<a name='Status' class='wikil'>Status</a>]<br>
+<br>
+Diese Seite kann auch ohne funktionierenden db-Connect aufgerufen werden. Sie erhalten hier Informationen zu Ihrer Installation. Wenn auf dem Server vorhanden, werden die Log-Files der Installationen bzw. Updates angezeigt. Wenn schon ein Datenbankzugriff erfolgt ist, werden Informationen zur Datenbank und dem aktuellen Benutzer ausgegeben. <br>
+Mit einem Klick auf "anzeigen" wird eine Informationsseite zum Webserver und zu PHP ausgegeben. Arbeiten Sie mit wechselnden Benutzern, kann es vorkommen, das noch auf falsche Daten zugegriffen wird. Löschen Sie Ihre Sitzungsinformation mit "löschen".<br>
+<br>
+
+[<a name='Katalog' href='Katalog.html' class='wikil'>Katalogerstellung</a>]<br>
+<br>
+Erstellen sie aus eine gewählten Menge Artikel einen Katalog oder Flyer aus gespeicherten Vorlagen.<br>
+<br>
+<br>
+
+[<a name='Partsedit' href='Partsedit.html' class='wikil'>Artikel Masseneditor</a>]<br>
+<br>
+Hier kann eine ausgewählte Menge an Artikel auf einen 'Rutsch' editiert werden.<br>
+Artikelnummer, Artikelbeschreibung und alle Preise.<br>
+<br>
+<br>
+
+<hr>
+<center><a href='#top'>nach oben</a></center>
+<br><center><a href="Javascript:self.close()">close</a></center>
+</body>
+</html>

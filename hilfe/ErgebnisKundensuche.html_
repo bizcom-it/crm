@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<title>CRM: ErgebnisKundensuche</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>ErgebnisKundensuche</h2>
+<hr>
+[<a name='Auswahlliste' class='wikin'>Auswahlliste</a>]<br>
+<br>
+In der Auswahlliste werden alle auf das Suchkriterium gefundenen Firmen und Kunden angezeigt.Dargestellt wird der Kunde, Postleitzahl, Ort, Telefon und eMailadresse. Durch das Auswählen von einem Listeneintrag wird in die [<a class='wikil' href='DetailansichtKundendaten.html'>Detailansicht</a>] gewechselt.<br>
+Es werden nicht alle Ergebnisse auf einmal dargestellt werden. Seitenweise können weitere Treffer abgerufen werden.<br>
+<br>
+Unterhalb der Liste gibt es eine Reihe von Aktionsknöpfen:<br>
+[<a name='Etikettendruck' class='wikin'>Etikettendruck</a>]<br>
+<br>
+Mit dem Etikettendruck bekommt der Benutzer die Möglichkeit für die gesammte Auswahlliste auf einmal die Etiketten zu erstellen.<br>
+<br>
+Will man eine bestimmte Auswahl der Kunden/Firmen nach Ort, Namen, Kundentyp usw. so ist diese Auswahl in der Maske [[KundenSuche#Komplette Suchmaske|Firmen-/Kundensuche]] nach den Kriterien zu treffen.<br>
+<br>
+In dem Pulldownmenü unter "Etikett" können die vormals erstellten Etiketten im [<a class='wikil' href='AnwenderDokumentationLx-Office.html#Etiketten'>"Etiketten-Editor"</a>] ausgewählt werden.<br>
+<br>
+[<a name='Serienmail' class='wikin'>Serienmail</a>]<br>
+Die eMail-Maske wird aufgerufen. Hier können Sie einen Text eingeben und ein Dokument als Anhang auswählen. 
+Der Text kann einige Variablen (siehe [<a class='wikil' href='AnwenderDokumentationLx-Office.html#Etiketten'>"Etiketten-Editor"</a>])  enthalten.<br>
+Mit 'senden' wird an alle zuvor ausgewählten Empfänger gesendet. Dazu öffnet sich ein Fenster, das erst nach der letzten eMail geschlossen werden darf.
+<hr>
+Seiten die hierher zeigen [<a class='wikiw' href='ErgebnisFirmenKundensuche.html'>ErgebnisFirmenKundensuche</a>] [<a class='wikiw' href='KundenSuche.html'>KundenSuche</a>] 
+</body>
+</html>

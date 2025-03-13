@@ -1,0 +1,333 @@
+<?php
+if (! @include_once('MDB2.php') ) {
+    echo "Konnte das Modul MDB2 nicht laden!<br>";
+    echo "Pr&uuml;fen Sie Ihre Installation:<br>";
+    echo "pear list | grep MDB2<br>";
+    echo "Variable '\$include_path' in der php.ini<br>";
+    echo "aktueller Wert: ".ini_get('include_path');
+    echo "<br><br><a href='inc/install.php?check=1'>Installations - Check durchf&uuml;hren</a><br>";
+    exit (1);
+};
+
+require_once ('PEAR.php');
+
+final class myDB extends MDB2 {
+    private $db = false;
+    private $rc = false;
+    private $errfile = "lxcrm.err";
+    private $logfile = "lxcrm.log";
+
+    /**********************************************
+    * myDB - Konstruktor
+    * IN: $host,$user,$pwd,$db,$port - Parameter der Datenbank
+    * OUT: DB-Objekt
+    **********************************************/
+    //public function myDB($host,$user,$pwd,$db,$port) {
+    public function myDB($conn) {
+        $dsn = array(
+                    'phptype'  => 'pgsql',
+                    'hostspec' => $conn['dbhost'],
+                    'port'     => $conn['dbport'],
+                    'username' => $conn['dbuser'],
+                    'password' => $conn['dbpasswd'],
+                    'database' => $conn['dbname'],
+                    'persistent' => true,
+                    'debug'    => true
+                );
+        $this->writeLog(print_r($dsn,true));
+        $options = array(
+            'result_buffering' => false,
+        );
+        //$this->db=& MDB2::factory($dsn,$options);
+        $this->db = @MDB2::connect($dsn,$options);
+        //if ( !$this->db  || PEAR::isError($this->db)) {
+        if( !$this->db || (new PEAR)->isError($this->db) ) {
+            $this->writeLog('Connect Error: '.print_r($dsn,true));
+            $this->dbFehler('Connect '.print_r($dsn,true),$this->db->getMessage());
+            die ($this->db->getMessage());
+        }
+        $this->writeLog('DB',print_r($this->db,true));
+        $this->db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+        $this->writeLog('Connect: ok ');
+        return $this->db;
+    }
+
+    /**********************************************
+    * dbFehler - Fehler in ein Log-File ausgeben
+    * IN: $sql - SQL-Statement
+    * IN: $err - Fehlermeldung
+    * OUT: NONE
+    **********************************************/
+    public function dbFehler($sql,$err) {
+        if ( $_SESSION['errlogfile'] ) {
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,date("Y-m-d H:i:s \n"), FILE_APPEND );
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,'SQL:'.$sql."\n", FILE_APPEND );
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,'Msg:'.$err."\n", FILE_APPEND );
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,print_r($this->rc->backtrace[0],true)."\n", FILE_APPEND );
+            $cnt=count($this->rc->backtrace);
+            for ($i=0; $i<$cnt; $i++) {
+                file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,$this->rc->backtrace[$i]['line'].':'.$this->rc->backtrace[$i]['file']."\n", FILE_APPEND );
+            }
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->errfile,"--------------------------------------------- \n", FILE_APPEND );
+        };
+        if ( $_SESSION['sql_error'] )
+            echo "</td></tr></table><font color='red'><b>$sql : $err</b></font><br>";
+    }
+
+    /**********************************************
+    * writelog - Texte in ein Log-File ausgeben
+    * IN: $txt - SQL-Statement oder Text
+    * OUT: NONE
+    **********************************************/
+    public function writeLog($txt, $all=true) {
+        if ( !$_SESSION['logfile'] ) return;
+        file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,date("Y-m-d H:i:s \n"), FILE_APPEND );
+        if ( is_array($txt) ) {
+            foreach ( $txt as $line ) 
+                file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,$line."\n", FILE_APPEND );
+        } else {
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,$txt."\n", FILE_APPEND );
+        }
+        if ( !$all ) return;
+        if ( !empty($this->rc->backtrace[0] )) {
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,"Fehler:\n", FILE_APPEND );
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,print_r($this->rc->backtrace[0],true)."\n", FILE_APPEND );
+            $cnt = count($this->rc->backtrace) - 1;
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,$this->rc->backtrace[$cnt]['line'].':'.$this->rc->backtrace[$cnt]['file']."\n", FILE_APPEND );
+        } else {
+            file_put_contents($_SESSION['erppath'].'/crm/tmp/'.$this->logfile,print_r($this->rc,true)."\n", FILE_APPEND );
+        }
+    }
+
+
+    /**********************************************
+    * query - beliebiges SQL-Statement absetzen
+    * IN: $sql - Statement
+    * OUT: true/false
+    **********************************************/
+    public function query($sql, $force = False) {
+        $this->writeLog($sql);
+        if (strpos($sql,";")>0 and !$force) {
+            //Sql-Injection? HTML-Sonderzeichen zulassen
+            if (!preg_match("/&[a-zA-Z]+$/",substr($sql,0,strpos($sql,";"))))
+                $this->dbFehler($sql,'SQL-injection??');
+                return false;
+        }
+        $this->rc=@$this->db->query($sql);
+        //if(PEAR::isError($this->rc)) {
+        if((new PEAR)->isError($this->rc)) {
+            $this->dbFehler($sql,$this->rc->getMessage());
+            $this->rollback();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**********************************************
+    * update - einen Datensatz modifizieren
+    * IN: $table - Tabelle
+    * IN: $fields - betroffene Felder
+    * IN: $values - dazugehörige Werte
+    * IN: $where - welcher Datensatz
+    * OUT: true/false
+    **********************************************/
+    public function update($table,$fields,$values,$where) {
+        if (strpos($where,"=")<1) {
+            $this->dbFehler('Update','Where missing or wrong: '.$where);
+            $this->dbFehler('Update',print_r(debug_backtrace(),true));
+            return false;
+        }
+        $this->writeLog(array('Update auf: '.$table,
+                              print_r($fields,true),
+                              print_r($values,true),
+                              "UPDATE $table set ".implode('= ?, ',$fields)." = ? WHERE ".$where),
+                        false);
+        //SQL-Statement vorbereiten
+        $sth = $this->db->prepare("UPDATE $table set ".implode('= ?, ',$fields)." = ? WHERE ".$where);
+        //if (PEAR::isError($sth)) {
+        if((new PEAR)->isError($sth)) {
+            $this->writeLog(array('prepare',$sth->getMessage()),false);
+            $this->dbFehler($sql,$sth->getMessage());
+            $this->rollback();
+            return false;
+        }
+        //wenn ok, ausführen
+        $this->rc=@$sth->execute( $values);
+        //if(PEAR::isError($this->rc)) {
+        if((new PEAR)->isError($this->rc)) {
+            $this->writeLog(array('execute',$this->rc->getMessage()),false);
+            $this->dbFehler($sql,$this->rc->getMessage());
+            $this->dbFehler(print_r($fields,true),print_r($values,true));
+            $this->rollback();
+            return false;
+        }
+        return true;
+    }
+
+    /**********************************************
+    * insert - einen neuen Datensatz anlegen
+    * IN: $table - Tabelle
+    * IN: $fields - betroffene Felder
+    * IN: $values - dazugehörige Werte
+    * OUT: true/false
+    **********************************************/
+    public function insert($table,$fields,$values,$prepstatement='') {
+        $this->writeLog(array('Insert in: '.$table,
+                              print_r($fields,true),
+                              print_r($values,true),
+                              $prepstatement),
+                        false);
+        //SQL-Statement vorbereiten
+        if ( $prepstatement != '' ) {
+            $sth = $this->db->prepare($prepstatement);
+        } else {
+            $sth = $this->db->prepare("INSERT INTO $table (".implode(',',$fields).") VALUES (".str_repeat("?,",count($fields)-1)."?)");
+        }
+        //if (PEAR::isError($sth)) {
+        if((new PEAR)->isError($sth)) {
+            $this->writeLog("Prepare: ".$sth->getMessage(),false);
+            $this->dbFehler($sql,$sth->getMessage());
+            $this->dbFehler('',$sth->userinfo);
+            $this->dbFehler('SQL',"INSERT INTO $table (".implode(',',$fields).") VALUES (".str_repeat("?,",count($fields)-1)."?)");
+            $this->dbFehler(print_r($fields,true),print_r($values,true));
+            $this->rollback();
+            return false;
+        }
+        //wenn ok, ausführen
+        $this->rc = @$sth->execute( $values);
+        //if(PEAR::isError($this->rc)) {
+        if((new PEAR)->isError($this->rc)) {
+            $this->writeLog("Execute: ".$this->rc->getMessage(),false);
+            $this->dbFehler($sql,$this->rc->getMessage());
+            $this->rollback();
+            return false;
+        } else {
+            $this->writeLog('InsertID:'.$this->db->lastInsertID(),true);
+            return $this->db->lastInsertID();
+        }
+    }
+
+    public function begin() {
+        $this->writeLog('BEGIN');
+        return $this->db->beginTransaction();
+    }
+    
+    public function commit() {
+        $this->writeLog('COMMIT');
+        return $this->db->commit();
+    }
+    
+    public function rollback() {
+        $this->writeLog('ROLLBACK');
+        return $this->db->rollback();
+    }
+    
+    public function getAll($sql) {
+        $this->writeLog('getAll: '.$sql);
+        if (strpos($sql,";")>0) { $this->dbFehler('Achtung','Semikolon'); return false;};
+        $rs = $this->db->queryAll($sql);
+        //if(PEAR::isError($rs)) {
+        if((new PEAR)->isError($rs)) {
+            $this->dbFehler($sql,$rs->getMessage());
+            return false;
+        } else {
+            $this->writeLog('getAll: '.print_r($rs,true));
+            return $rs;
+        }
+    }
+  
+    /**
+     * Holt die Daten als assoziatives Array aus der DB.
+     * S.a. PEAR::getAssoc
+     * return mixed, false
+     */
+    public function getAssoc($sql){
+        $this->writeLog('getAssoc: '.$sql);
+        $this->db->loadModule('Extended');
+        $this->rc=$this->db->getAssoc($sql);
+        //if(PEAR::isError($this->rc)) {
+        if((new PEAR)->isError($this->rc)) {
+            $this->dbFehler($sql,$this->rc->getMessage());
+            return false;
+        } 
+        else return $this->rc;
+    }
+    public function getJson($sql,$pre = false) {
+        $this->writeLog('getJson: '.$sql);
+        $rs = $this->getAll($sql);
+        if ( $pre ) {
+            array_unshift($rs,$pre);
+            //$rs = $pre + $rs;
+            $this->writeLog('pre: '.print_r($rs,true));
+        }
+        $rs = json_encode($rs);
+        $this->writeLog('json: '.print_r($rs,true));
+        return $rs;
+    }    
+    public function getOne($sql) {
+        $this->writeLog('getOne: '.$sql);
+        $rs = $this->db->queryRow($sql);
+        //if(PEAR::isError($rs)) {
+        if((new PEAR)->isError($rs)) {
+            $this->dbFehler($sql,$rs->getMessage());
+            $this->writeLog(array('getOne: '.$rs->getMessage(),print_r($rs,true)));
+            return false;
+        } else {
+            $this->writeLog('getOne: '.print_r($rs,true));
+            return $rs;
+        }
+    }
+    public function saveData($txt) {
+        //if (get_magic_quotes_gpc()) {
+        if (get_magic_quotes_runtime()) {
+            return $txt;
+        } else {
+            return $this->db->escape($txt);
+        }
+    }
+    
+    /*
+     * Benutzt PEAR::executeMultiple. Erwartet als
+     * Zeichenkette das PreparedStatement
+     * und die entsprechenden Werte für das Statement
+     * Ist ferner transaktionssicher (autocommit off)
+     * @param string $statement
+     * @param mixed $data
+     *
+     * @return boolean
+     */
+    public function executeMultiple($statement, $data){
+        $this->writeLog(array("executeMultiple: $statement",
+                              "mit den Werten:" . print_r($data,true)));
+        $this->db->loadModule('Extended');
+        if (!$this->db->supports('transactions')){
+            $this->writeLog("No Transaction");
+            exit();
+        }
+
+        $sth = $this->db->prepare($statement);                        //Prepare
+        //if (PEAR::isError($sth)) {
+        if((new PEAR)->isError($sth)) {
+            $this->dbFehler($sql,$sth->getMessage());
+            $this->rollback();
+            return false;
+        }
+
+        $res =& $this->db->beginTransaction();
+        $res =& $this->db->extended->executeMultiple($sth, $data);     //Daten senden
+        $this->writeLog($res);
+        //if (PEAR::isError($res)) {
+        if((new PEAR)->isError($res)) {
+                $this->dbFehler($sql,$sth->getMessage());
+                $this->rollback();
+                return false;
+        }else{
+                $res = $this->commit();
+                $this->writeLog($res);
+        }
+        return true;
+    }
+    
+}
+?>

@@ -1,0 +1,23 @@
+In diesem Feld wird der SQL-Befehl für die Auswertung eingegeben.<br>
+Einige Plazhalter können verwendet werden:<br>
+<ul>
+<li>#WHERE# Wird durch Zusatzfelder erstellt
+<li>#HAVING# &nbsp;&nbsp;-&nbsp;&quot;&nbsp;-
+<li>#VONDATE# Datumsformat YYYY-MM-DD
+<li>#BISDATE#
+<li>#VONYYYYMM# Datumsformat YYYY-MM
+<li>#BISYYYYMM#
+</ul>
+<br>
+Den SQL-Befehl schließt die Zeichenkette &quot;ODER BY&quot; ab.<br>
+<br>
+Verschiedene Tabellen:<br>
+<ul>
+<li>ar - Verkaufsrechnungen
+<li>ap - Einkaufsrechnungen
+<li>invoice - Rechnungspositionen
+<li>parts - Artikel
+<li>partsgroup - Warengruppen
+<li>customer - Kunden
+<li>vendor - Lieferanten
+</ul>

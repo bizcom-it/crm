@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>CRM: Benutzer</title>
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+<body>
+<h2>E-Mail versenden</h2>
+<hr>
+Je nach dem ob die Seite aus dem Menü heraus oder aus der Adressmaske aufgerufen wird, ist das Feld 'An' schon vorbelegt.<br>
+<br>
+In die Felder "An:" und "CC:" kann/können die Adresse/n direkt eingegeben werden. Die Autoverfollständigung beginnt ab einer Menge Zeichen mit der Suche in der Datenbank und schlägt eine begrenzte Treffermenge vor. Je mehr Zeichen, desto eingeschränkter die Liste.<br>
+Man kann auch Jockerzeichen, "_" für genau <strong>ein</strong> Zeichen und "%" für eine beliebige Zeichenfolge, mehrfach im Suchbegriff verwenden. <br>
+<br>
+Wird die Checkbox zwischen 'B' und 'CC' aktiviert, so wird 'BCC' verwendet.<br>
+<br>
+Sind E-Mail Vorlagen gespeichert, so werden diese in der Auswahlbox 'Vorlage' aufgelistet. Wird eine Vorlage ausgewählt, so wird diese geladen und in den Textfeldern 'Schlagzeile' (Subject) und 'Text' ausgefüllt.<br>
+Vorlagen können verschiedene Platzhalter enthalten. Die Platzhalter werden durch '%' - Zeichen eingeklammert. Diese werden aber nur ausgefüllt, wenn das Programm aus einer Adressmaske gerufen wurde. Fast alle Felder der Datenbank können als Platzhalter verwendet werden. Dabei kommt es auf die aufrufende Adress-Maske ("customer", "vendor" oder "contacts") an, welche Daten zur Verfügung stehen. Bei Ansprechpartner wird 'cp_anrede' als Platzhalter für 'cp_gender' genutzt, wenn das Anredewort gewünscht wird.<br>
+%DATUM% steht für das Datum in der Form 'TT.MM.JJJJ', %DATE% für 'YYYY-MM-DD'.<br>
+<br>
+Bis zu drei Dateien können mit der E-Mail versendet werden.<br>
+<br>
+Mit dem Versenden wird die Mail einem Kontakt zugeordnet, wenn es ihn gibt. Sie erscheint als neuer "Threat" in dem Verlauf des Kontaktes.<br>
+[<a class='wikiw' href='AnwenderDokumentationLx-Office.html'>Startseite</a>]
+<br><center><a href="Javascript:self.close()">close</a></center>
+</body>
+</html>

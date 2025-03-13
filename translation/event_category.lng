@@ -1,0 +1,32 @@
+var langData = {
+        de: {
+            HEADLINE:   "Kalender-Kategorie hinzufügen, editieren, löschen oder verschieben",
+            CATEGORY:   "Kategorie",
+            CATEGORYS:  "Kategorien",
+            COLOR:      "Farbe",
+            SAVE:       "Sichern",
+            CALENDAR:   "Kalender",
+            DELETE:     "Löschen",
+            RHEADLINE:  "Ressourcen hinzufügen, editieren, löschen oder verschieben",
+            RESSOURCE:  "Ressource",
+            NEWRES:     "Neu",
+            SAVERES:    "sichern",
+            HOLEN:      "hole Ressourcen",
+            CLEAR:      "Reset",
+        },
+        en: {
+            HEADLINE:   "Add, edit, delete or move Calendar Categories",
+            CATEGORY:   "Category",
+            CATEGORYS:  "Categorys",
+            COLOR:      "Color",
+            SAVE:       "Save",
+            CALENDAR:   "Calendar",
+            DELETE:     "Delete",
+            RHEADLINE:  "Add, edit, delete or move Calendar Ressources",
+            RESSOURCE:  "Ressource",
+            NEWRES:     "new",
+            SAVERES:    "save",
+            HOLEN:      "get ressourcen",
+            CLEAR:      "Reset",
+        }
+    };

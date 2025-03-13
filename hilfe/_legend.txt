@@ -1,0 +1,7 @@
+Hier wird die Legende für die Grafik eingestellt.<br>
+<br>
+Wieder werden alle Angaben in doppelte Anführungsstriche ( <b>&quot;</b> ) gestellt.<br>
+Es werden immer Paare, die durch einen Doppelpunkt verbunden sind, eingegeben.<br>
+Die erste Angabe ist die Bezeichnung für das folgende Datenbankfeld, dass hier dargestellt werden soll.<br>
+Paare werden durch Komma getrennt. <br>
+Die Zeile umschließen geschweifte Klammern ( <b>{ }</b> ).<br>

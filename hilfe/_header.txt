@@ -1,0 +1,19 @@
+Hier werden die Tabellenüberschriften und die Formatierung der Zellen angegeben.<br>
+<br>
+Zunächst wird die Tabellenüberschrift eingegeben, danach durch einen Doppelpunkt getrennt die Formatierung.<br>
+Alle Angaben sind in <b>doppelte Anführungsstriche</b> ( <b>&quot;</b> ) zu stellen.<br>
+Die Zeile wird von geschweifte Klammern ( <b>{ }</b> )umgeben.<br>
+<br>
+Formatierungen:<br>
+<ul>
+<li>%f  = Flieskommazahl, unformatiert
+<li>%0f = Flieskommazahl mit führender Null vor dem Komma
+<li>%0.2f = Flieskommazahl mit führender Null vor dem Komma
+<li>%d = Ganzzahl
+<li>%s = Text
+<li>jamo = Monat + Jahr: 10-2015
+<li>date = Datum: 01.10.2015
+</ul>
+<br>
+Beispiel:<br>
+{&quot;WT&quot;:&quot;%s&quot;,&quot;Umsatz&quot;:&quot;%0.2f&quot;,&quot;Verkäufe&quot;:&quot;%d&quot;}

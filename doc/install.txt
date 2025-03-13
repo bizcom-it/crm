@@ -1,0 +1,279 @@
+Kivitendo CRM 2.2.0  
+
+Installation Kivitendo CRM
+-------------------------
+Die Installation der CRM kann von jedem Administrator mit Linux-Grundkenntnissen 
+durchgeführt werden und beansprucht einen Zeitaufwand von fünf bis zehn Minuten. 
+
+Das Installationsskript erzeugt die notwendigen Verzeichnisse und Tabellen
+für die CRM und erweitert einige Tabellen der ERP. Die Funktionstüchtigkeit 
+der ERP wird dadurch natürlich nicht beeinträchtigt.
+
+Die neuste Entwicklerversion kann mit "git clone https://github.com/kivitendo/kivitendo-crm.git"
+direkt aus dem Repository kopiert werden. Voraussetzung hierfür ist das Programmpaket Git 
+(apt-get install git) 
+
+Kivitendo hieß früher Lx-Office. Dadurch heißen einige Pfade noch lx-office.
+Die Konfigurationsdatei der ERP wurde von lx_office.conf in kivitendo.conf umbenannt.
+Aus Gründen der Kompatibilität zu älteren Installationen wird die lx_office.conf in der ERP weiterhin ausgewertet.
+Welche ERP-Konfigurationsdatei in der CRM ausgewertet wird, kann in der CRM-Konfigurationsdatei inc/conf.php
+der Variblen $erpConfigFile zugewiesen werden. Achtung, die Dateiendung (.conf) darf nicht mit angeben werden.
+Voreingestellt ist kivitendo.
+
+Vorrausetzungen:
+    Kivitendo ERP >= 3.3.0
+    PHP >= 4.2x
+    
+    php-pear 
+    php5-gd 
+    php5-imap php-mail php-mail-mime 
+    php-mdb2 php-mdb2-driver-pgsql 
+    php-fpdf 
+    ttf-freefont 
+    php5-curl 
+    tinymce 
+    libphp-jpgraph
+
+    PEAR::Contact_Vcard_Build
+    PEAR::Contact_Vcard_Parse
+    PEAR::HTTP_WebDAV_Client   <- Nur wenn WebDav verwendet wird
+
+Fast alle Pakete können unter debianoiden Systemen in der Konsole mit folgendem Befehl installiert werden.
+apt-get install libapache2-mod-php5 php5-gd php5-imap php-mail php-mail-mime php-pear php-mdb2 php-mdb2-driver-pgsql php-fpdf libfpdi-php imagemagick ttf-freefont php5-curl tinymce libphp-jpgraph
+
+Die restlichen Pearpaket installieren:
+    pear install  Contact_Vcard_Build Contact_Vcard_Parse
+
+Installierte Pearpakete anzeigen:
+    pear list
+  
+Die Pfade können entweder in der php.ini oder durch umbenennen der htaccess.txt in .htaccess angepasst werden.
+    cp htaccess.txt .htaccess
+
+Crm in die ERP verlinken
+    cd /var/www/kivitendo-erp && ln -s ../kivitendo-crm crm
+
+Eigentümer der Datei auf Webserver setzen
+z.B. Debian / Ubuntu:
+    chown -R www-data: crm/
+
+Menü verlinken oder kopieren:
+cd kivitendo-erp/menus/users
+ln -s /var/www/kivitendo-crm/menu/10-crm-menu.yaml
+
+Rechte für CRM ermöglichen:
+cp /var/www/kivitendo-crm/update/add_crm_master_rights.sql /var/www/kivitendo-erp/sql/Pg-upgrade2-auth/
+
+Übersetzungen anlegen:
+cp /var/www/kivitendo-crm/update/missing /var/www/kivitendo-erp/locale/de/
+cd kivitendo-erp
+scritps/locales.pl de
+
+Webserver neu starten
+z.B. Debian / Ubuntu:
+    /etc/init.d/apache2 restart 
+
+Wenn Barcodeprint aus den Warenstammdaten genutzt wird, sollte dieses LaTeX-Paket installiert sein:
+texlive-fonts-extra
+
+Administration der ERP aufrufen und die Gruppe CRMTL hinzufügen.
+Nur ihr zugewiesene Benutzer können die Mandanten-Konfiguration der CRM anpassen. 
+Kivitendo im Browser aufrufen und anmelden.
+Nach dem Klick auf einen der neu entstandenen CRM-Menü-Punkte werden einige Tabellen angelegt.
+Mandanten und Benutzereinstellungen sichern und die CRM kann verwendet werden. 
+CRM -> Administration -> Mandant
+CRM -> Administration -> Benutzer
+
+Weite Informationen und Lösungsansätze bei Problemen:   
+
+Die conf.php:
+Drei Variablen bestimmen die Grundsätzliche Konfiguration der CRM.
+ERPNAME            : Verzeichnisname der ERP, Default "kivitendo-erp" 
+erpConfigFile    : Name des Konfigfiles der ERP, Default "kivitendo"
+ERP_BASE_URL    : Kommt nur bei (Reverse)-Proxy zum Zuge. Default ""
+                  Hier ist die URL des Proxy einzutragen. Beispiel:
+              
+Apacheconfig auf dem Proxy für den Virtualhost:
+        ProxyPass /lxodemo/ http://192.168.1.100/demo2/
+        ProxyPassReverse /lxodemo http://192.168.1.100/demo2/
+
+LxO-Config auf dem Zielserver:
+    AliasMatch ^/demo2/[^/]+\.pl /var/www/30/demoerp/dispatcher.fcgi
+    Alias       /demo2/          /var/www/30/demoerp/
+Inhalt von ERP_BASE_URL:
+    "http://192.168.1.85/lxodemo/"
+
+Anpassungen in der /etc/php5/apache2/php.ini:
+    Das Fehlerreporting evtl. etwas runterschrauben. 
+    PHP5:
+        error_reporting  =  E_ALL & ~E_NOTICE 
+    PHP5.3:
+        error_reporting  =  E_ALL & ~E_NOTICE & ~E_DEPRECATED
+
+    PHP-Code wird angezeigt (sollte nicht mehr vorkommen):
+        short_open_tag = On
+
+    sonstiges:
+        include_path = ".:/usr/share/php:/usr/share/fpdf:/usr/share/jpgraph"
+        default_charset = "utf-8"
+        log_errors = On
+
+    hier sind evtl. eigene Anpassungen nötig:    
+        post_max_size = 8M
+        upload_max_filesize = 8M
+        memory_limit = 128M
+        max_execution_time = 60
+
+
+Font für fpdf installieren (Debian):
+cd /usr/share/php/Image/Canvas/Fonts
+cp /usr/share/fonts/truetype/freefont/FreeSans.ttf .
+echo FreeSans,FreeSans.ttf >> fontmap.txt 
+ 
+
+Das TAR-File entpacken, dabei an HFS halten.
+z.B. RPM-Systeme
+    cd /srv/; tar xzf kivitendo-crm-{version}.tgz
+z.B. Debian
+    cd /var/www; tar xzf kivitendo-crm-{version}.tgz
+
+
+     http://localhost/kivitendo/login.pl
+ 
+
+Update auf Version 1.9.0
+------------------------
+Die Einstellungen in der inc/conf.php sind auf ein Minimum reduziert worden.
+Diese Einstellungen können nun für jeden Mandanten über die Oberfläche eingestellt werden.
+Dazu muss mindestens ein Benutzer besondere Rechte bekommen. Bitte dazu admin.pl aufrufen.
+Legen Sie eine neuen Gruppe CRMTL an. Das einzige Recht das hier unter CRM gesetzt sein muss ist 
+'Admin Status'.
+Ordnen Sie einen Benutzer dieser Gruppe zu. 
+Dieser Benutzer wir in kommenden Versionen mehr Aufgaben bekommen, daher "sparsam" vergeben.
+Wenn noch nicht geschehen, die menu.ini nach CRM--Admin--Status ergänzen:
+
+[CRM--Admin--Mandant]
+ACCESS=crm_adminstatus
+module=crm/mandant.php
+
+Sollte die Migration der inc/conf.php fehlschlagen, prüfen Sie ob die Tabelle 'crmdefaults' 
+angelegt wurde. Wenn ja, können die Einstellungen über die Oberfläche nachgeholt werden.
+Wenn Nein, dann bitte die Tabelle manuell anlegen. Dazu einfach den oberen Teil aus
+der Datei update/crm_defaults.sql "CREATE .... );" auf der Datenbankkonsole ausführen.
+
+
+Geo-Datenbank:
+--------------
+In der Adressdatenmaske können einige Daten aus einer Geodatenbank gefüllt werden.
+Dazu muss zuvor die Datenbank angelegt werden.
+
+Dazu ein Terminalfenster öffnen oder per Fernzugriff auf dem Server auf der Konsole 
+anmelden. In das Unterverzeichnis 'update' der CRM wechseln.
+
+Die GeoDaten entpacken:
+
+gunzip  geodaten.sql.gz
+
+Die Postgresql-Konsole mit der entsprechenden Datenbankinstanz aufrufen:
+    psql -U <dbuser> -W <meinedb>
+In der PostgreSQL-Konsole folgendes eingeben:
+    \i geostruck.sql
+    \i geodaten.sql
+Es rasseln eine Menge Meldungen durch, es sollten keine Fehler auftreten.
+Die Konsole mit '\q' verlassen.
+
+Jetzt noch die Mandanten-Konfiguration öffnen und die Checkbox hinter 'GEODB' setzen.
+
+Jetzt erscheint in den Eingabemasken ein Knopf 'suche Ort'. Geben Sie in Plz, Ort oder
+Vorwahl einen (Teil-)Begriff ein und klicken Sie auf den Knopf. In einem Pop-Up werden
+die Treffer angezeigt. Wird ein Wert ausgewählt, wird in Plz,Ort,Vorwahl der dazugehörige 
+Wert eingetragen.
+
+Die Ortsuche nutzt nur einen kleinen Teile der Geodaten die gespeichert sind (25-70MB). 
+Klicken Sie in der Stammdatenmaske auf den Ortsnamen, öffnet siche ein neues Fenster.
+Es werden zunächst alle Orte mit gleichem Namen und gleicher PLZ angezeigt. Klicken Sie
+darauf, werden erweiterte Daten angezeigt. So können Sie durch Gemeinden, Kreise, 
+Bundesländer usw. surfen.
+
+Weitere Informationen zu den Daten sind hier zu finden:
+http://opengeodb.giswiki.org/wiki/OpenGeoDB
+
+BLZ-Datenbank:
+--------------
+In der Adressdatenmaske können einige Daten aus einer BLZ-Datenbank gefüllt werden.
+Dazu muß zuvor die Datenbank angelegt werden.
+
+Dazu ein Terminalfenster öffnen oder per Fernzugriff auf dem Server auf der Konsole 
+anmelden. In das Unterverzeichnis 'update' der CRM wechseln. Die Postgresql-Konsole 
+mit der entsprechenden Datenbankinstanz aufrufen:
+    psql -U <dbuser> -W <meinedb>
+In der PostgreSQL-Konsole folgendes eingeben:
+    \i BLZ.sql
+Es rasseln eine Menge Meldungen durch, es sollten keine Fehler auftreten.
+Die Konsole mit '\q' verlassen.
+
+Kopieren Sie die Datei update/blz.php nach <lx-office-erp>/lxo-import/ wenn diese noch
+nicht vorhanden ist.
+Erweitern Sie das LxO-Menü in der Sektion CSV-Import:
+
+[System--Import CSV--BLZ]
+module=lxo-import/blz.php
+
+Die max_execution_time  sollte groß genu gewählt werden. Es sind über 20000 Datensätze.
+
+Jetzt noch die Mandantenkonfiguration öffnen und die Checkbox hinter 'BLZDB' setzen.
+
+Melden Sie sich neu an. Holen Sie von :
+http://www.bundesbank.de/Redaktion/DE/Standardartikel/Aufgaben/Unbarer_Zahlungsverkehr/bankleitzahlen_download.html
+die aktuellen Bankleitzahlen. Rufen Sie das Programm "System->CSV-Import->BLZ" auf
+und importieren Sie damit die Daten.
+
+Die Daten dürfen auf keinen Fall in UTF-8 gewandelt werden !!!
+
+In der Bearbeitungsmaske der Firmen bekommen Sie nun unter "Sonstiges" einen neuen Knopf.
+
+Benutzerfreundliche Links:
+--------------------------
+ermöglichen einfacheres Speichern von Dateien vom Server bzw aus dem Netzwerk
+und befinden sich in PfadZurCRM/Datenbankname/link_dir.
+Die Links werden beim Speichern des Kunden nach dem Format "Kundenname_Kundennummer"
+automatisch oder manuell unter CRM->Admin->Status erzeugt.
+Link ins Home-Verzeichnis erstellen:
+ln -s PfadZurCRM/Datenbankname/link_dir_cust /home/username/Kundendaten
+
+Jetzt noch die Mandantenkonfiguration öffnen und folgende Parameter setzen:
+dir_mode=0775;  Owner + Gruppe Schreibrecht, andere Leserecht
+dir_group=users; Mitglieder dieser Gruppe dürfen gesetzte Rechte       
+sep_cust_vendor=true; Kunden und Lieferanten in unterschiedliche Verzeichnisse
+
+Der Webserver muss Mitglied in der Gruppe "dir_group" sein.
+Das Verzeichnis "dokumente" sollte manuell auf Gruppe gesetzt werden.
+Bei einer Migration auch alle Unterverzeichnisse und Dateien:
+chmod 775 -R dokumente
+chgrp -R users dokumente
+
+Zusatzprogramme:
+----------------
+Einige Zusatzprogramme (EuR, ZM, Inventur, Katalog, Artikelmassenänderung, eBay-Importer), 
+die ich für mich geschrieben habe, sind unter dem Menü-Punkt 'Sonstiges' zu finden.
+
+Wenn Barcode im Tex erzeugt werden soll, muss der Webserver in seinem Homeverzeichnis, idR. /var/www, 
+Schreibrechte besitzen. Oder aber es muss das Fontverzeichnis dort abgelegt werden.
+Im Homeverzeichnis des Users wird mit dem folgenden Befehl ein Verzeichnis .texmf-var angelegt
+mktexpk --mfmode / --bdpi 600 --mag 1+120/600 --dpi 720 wlc39
+
+Zusatzprogramme 2:
+------------------
+Barcodes für Artikel drucken:
+Den Patch ic_form_header.patch in das File templates/webpages/ic/form_header.html einspielen.
+Das Tex-File vorlage/barcode.tex anpassen.
+
+Etiketten aus Rechnungsmaske drucken und E-Mais verschicken:
+Den Patch ir_form_footer.patch in templates/webpages/ir/form_footer.html und
+Patch is_form_footer.patch in templates/webpages/is/form_footer.html einspielen.
+
+patch -p1 -b templates/webpages/is/form_footer.html < crm/update/is_form_footer.patch
+
+Weitere Informationen, professioneller Support:
+http://www.lx-system.de
+

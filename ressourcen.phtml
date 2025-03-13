@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+
+<script>
+   var colors  = new Array('#FFFF0C','#FF7400', '#CDEB8B','#6BBA70','#006E2E','#C3D9FF','#0101DF','#4096EE','#356AA0','#FF0096','#DF0101','#B02B2C','#000000');
+$(document).ready(function() {
+    $.ajax({
+        url: 'jqhelp/calendar.php',
+        dataType: 'json',
+        data: { task:  'initCal', }
+    }).done(function(json) {
+        var language = kivi.myconfig.countrycode;    
+        var feature_ac_delay     = json['feature_ac_delay'];
+        var feature_ac_minlength = json['feature_ac_minlength'];
+        var termbegin   = ((json['termbegin'])?json['termbegin']:"07")+":00";
+        var termend     = ((json['termend'])?json['termend']:"19")+":00";
+        var termseq     = (json['termseq'])?json['termseq']:"30";
+        //var language    = (json['countrycode'])?json['countrycode']:'en';
+        var loginCRM    = json['loginCRM'];
+        var manager     = json['manager'];
+        var grps        = json['grps']; 
+        if ( manager ) { $( '#Rdone' ).show(); }
+        else           { $( '#Rdone' ).hide(); }
+        $.datepicker.setDefaults($.extend({}, { buttonImageOnly: false, buttonImage:'', showOn: 'focus' }));
+        $( "#RstartDate" ).datepicker(); 
+        $( "#RendDate" ).datepicker();
+        $( "#RstartTime" ).timepicker({showPeriodLabels: false,hourText:langData[language]['Hour']});
+        $( "#RendTime" ).timepicker({showPeriodLabels: false,hourText:langData[language]['Hour']});
+        $( "#myressource").find('.lang').each( function(){
+            var key = $( this ).attr( "data-lang" );
+            if( $( this ).is( ":input" ) ) $( this ).attr( 'title', typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG '+key );
+            else $( this ).text( typeof( langData[language][key] ) != 'undefined' ? langData[language][key] : 'LNG '+key );
+        });//end $.each lang
+        $( "#Rdialog" ).dialog({
+            autoOpen: false,
+            height: 500,
+            width: 680,
+            modal: true,
+            buttons: {
+                "Save": function() {
+                        var done = $( "#Rdone" ).is( ":checked" );
+                        if ( !manager && done ) return; //$( this ).dialog( "close" );
+                        var start = moment($( "#RstartDate" ).val() + ' ' + $( "#RstartTime" ).val(),'L LT');
+                        var end = moment($( "#RendDate" ).val() + ' ' + $( "#RendTime" ).val(),'L LT');
+                        var title = $( "#Rressource" ).val();
+                        var description = $( "#Rdescription" ).val();
+                        var id = $( "#Rid" ).val();
+                        var allDay = $( "#RallDay" ).is( ":checked" );
+                        var done = $( "#Rdone" ).is( ":checked" );
+                        var uid = $( "#Ruser option:selected" ).val();
+                        var color = $( "#Rcolor" ).val();
+                        var repeat = $( "#Rrepeat" ).val();
+                        var repeat_factor = $( "#Rrepeat_factor" ).val();
+                        var repeat_quantity = $( "#Rrepeat_quantity" ).val();
+                        var repeat_end =  moment($( "#Rrepeat_end" ).val() + ' 23:59:59' ,'L LT'); 
+                        if ( title ) {
+                            event = { //wird benötigt???
+                                title: title,
+                                description: description,
+                                start: start,
+                                end: end,
+                                id : id,
+                                allDay: allDay,
+                                done : done,
+                                uid : uid,
+                                color: color,
+                                done:  false,
+                                location:'',
+                                repeat:repeat,
+                                repeat_factor:repeat_factor,
+                                repeat_quantity:repeat_quantity,
+                                repeat_end:repeat_end,
+                                visibility:-2,
+                            } //end event
+                            start = moment(start).format( "YYYY-MM-DD HH:mm:ss");
+                            end = moment(end).format( "YYYY-MM-DD HH:mm:ss");
+                            repeat_end = moment(repeat_end).format( "YYYY-MM-DD HH:mm:ss");
+                            $.ajax({
+                                url: 'jqhelp/calendar.php',
+                                data: {
+                                    task:  id ? 'updateEvent' : 'newEvent',
+                                    title: title,
+                                    description: description,
+                                    id:   id,
+                                    allDay: allDay,
+                                    done : done,
+                                    uid : uid,
+                                    start: start,
+                                    end: end,
+                                    color: color,
+                                    repeat:repeat,
+                                    repeat_factor:repeat_factor,
+                                    repeat_quantity:repeat_quantity,
+                                    repeat_end:repeat_end,
+                                    visibility : -2, // eine Ressource
+                                    location: '',
+                                    prio: 0,
+                                    job : 0,
+                                    category: 0,
+                                },
+                                type: "POST",
+                                error: function () {
+                                    alert('Ajax Error');
+                                }
+                        }) // end ajax
+                        var activeTab = $("#tabs .ui-tabs-panel:visible").attr("id");
+                        $( "#calendarressourcen" ).fullCalendar( 'refetchEvents' );
+                    } //end title
+                    else alert('Title is empty'); //ToDo                 
+                   $( this ).dialog( "close" );
+                },//end save
+                Delete: function() {
+                    var done = $( "#Rdone" ).is( ":checked" );
+                    if ( !manager && done ) return; //$( this ).dialog( "close" );
+                    var id = $( "#Rid" ).val();
+                    if( id ) $( "#calendarressourcen" ).fullCalendar( 'removeEvents', id ); 
+                    $.ajax({
+                            url: 'jqhelp/calendar.php',
+                            data: {
+                                task:  'deleteEvent',
+                                id: id 
+                            },
+                            type: "POST",
+                            success: function() {
+                                //alert( "Event gelöscht"  );
+                            },
+                            error: function () {
+                                alert('Ajax Error');
+                            }
+                        }) 
+                        $( this ).dialog( "close" );
+                },
+                Cancel: function() {                         
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {                       
+                $( this ).dialog( "close" );
+            }
+        });//end dialog
+        var calculate_end = function(){ 
+            $( "#Rrepeat_end" ).val( moment( $( "#RendDate" ).val(), "L" ).add( $( "#Rrepeat" ).val(), $( "#Rrepeat_factor" ).val() * $( "#Rrepeat_quantity" ).val() ).format( "L" ) ); 
+        };
+        var calculate_repeat_quantity = function() {
+            var a = moment( $( "#RendDate" ).val(), 'L' );
+            var b = moment( $( "#Rrepeat_end" ).val(), 'L' );
+            var erg = Math.floor( ( b.diff( a, $( "#Rrepeat" ).val() ) ) / $( "#Rrepeat_factor" ).val() );
+            $( "#Rrepeat_quantity" ).val( erg < 0 ? 0 : erg );                   
+        };
+        $.ajax({
+             url: 'jqhelp/calendar.php',
+             data: { task: "getUsers" }
+        }).done(function(json) {
+            $( "#Ruser" ).selectBoxIt({
+                populate: $.parseJSON( json.trim() )
+            });
+        });
+        $('#calendarressourcen' ).fullCalendar({
+            lang: language,
+            theme: true,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month, agendaWeek, agendaDay'
+            },
+            minTime: termbegin,
+            maxTime: termend,
+            slotDuration: '00:'+termseq+':00',
+            weekNumbers: true,
+            editable: true,
+            defaultView: 'agendaWeek',
+            dragble: true,
+            selectable: true, 
+            selectHelper: true,
+            events: {
+                     url: 'jqhelp/calendar.php',
+                     data: { myuid: loginCRM, task: 'ressource' }
+            },//end events
+            /*** New Event ************************************************************************************/
+            select: function( start, end ){
+                        $( "label[for=Rdone]").hide();
+                        $( '#Rdone' ).hide();
+                        $( "#Rressource" ).val('');
+                        $( "#Rdescription" ).val('');
+                        $( "#Rid" ).val('');
+                        $( "#RallDay").prop( 'checked', false );//ToDo abfragen ob es allDay ist
+                        $( "#RstartDate" ).val( moment( start ).format( "L") );
+                        $( "#RstartTime" ).val( moment( start ).format( "LT") );
+                        $( "#RendDate" ).val( moment( end ).format( "L") );
+                        $( "#RendTime" ).val( moment( end ).format( "LT") );
+                        $( "#Ruser" ).data("selectBox-selectBoxIt").selectOption(loginCRM);
+                        $( "#Rrepeat" ).data( "selectBox-selectBoxIt" ).selectOption( 'day' );
+                        $( "#Rcolor, #Rrepeat_quantity" ).val( "" );
+                        $( "#RcolorPick" ).hide();
+                        $( "#Rrepeat_factor,#Rrepeat_quantity" ).val( '0' );
+                        $( "#Rrepeat,#Rrepeat_factor,#Rrepeat_quantity" ).change( calculate_end );
+                        $( "#Rrepeat_end" ).change( calculate_repeat_quantity );
+                        $( "#Rdialog" ).dialog( "open" );
+            },//end select
+            /*** Edit Event *************************************************************************************/
+            eventClick: function( event ){
+                        if ( !manager ) {
+                            $( '#Rdone').hide();
+                            if ( event.done == 't' ) {
+                                $( 'label[for=Rdone]' ).show();
+                                $(":input").attr("disabled", true).css("background","#F8F8F3");
+                                $(".ui-button").attr("disabled", false);
+                            } else {
+                                //$(":input[type!='button']").attr("disabled", false).css("background","#F8F8F3");
+                                $( 'label[for=Rdone]' ).hide() 
+                            };
+                        } else {
+                            $( '#Rdone, label[for=Rdone]' ).show(); 
+                        };
+                        $( "#Rressource" ).val(event.title);
+                        $( "#Rdescription" ).val(event.description);
+                        $( "#Rid" ).val(event.id);
+                        $( "#Rdone" ).prop( 'checked', event.done == 't' );
+                        $( "#RallDay").prop( 'checked', false );//ToDo abfragen ob es allDay ist
+                        $( "#RstartDate" ).val( moment( event.start ).format( "L") );
+                        $( "#RstartTime" ).val( moment( event.start ).format( "LT") );
+                        $( "#RendDate" ).val( moment( event.end ).format( "L") );
+                        $( "#RendTime" ).val( moment( event.end ).format( "LT") );
+                        $( "#Ruser" ).data("selectBox-selectBoxIt").selectOption(event.uid);
+                        $( "#Rcolor" ).val( event.color );
+                        $( "#Rrepeat_quantity" ).val( event.repeat_quantity );
+                        $( "#RcolorPick" ).hide();
+                        $( "#Rrepeat_factor").val( event.repeat_factor );
+                        $( "#Rrepeat_quantity" ).val( event.repeat_quantity );
+                        $( "#Rrepeat" ).data("selectBox-selectBoxIt").selectOption( event.repeat.trim() ); 
+                        $( "#Rrepeat,#Rrepeat_factor,#Rrepeat_quantity" ).change( calculate_end );    
+                        $( "#Rrepeat_end").change( calculate_repeat_quantity );
+                        $( "#Rrepeat_factor" ).val( event.repeat_factor );
+                        $( "#Rrepeat_quantity" ).val( event.repeat_quantity );
+                        $( "#Rrepeat_end" ).val( moment( event.repeat_end ).format( "L") == 'Invalid date' ? '' : moment( event.repeat_end ).format( "L")  );
+                        $( "#Rdialog" ).dialog( "open" );
+            }, //end eventClick
+            /*** Move Event *************************************************************************************/
+            eventDrop: function(event) {
+                    if ( event.done == 't' && !manager) {
+                        alert('Aktion nicht erlaubt!\nÄnderung wird nicht gesichert!');
+                        return;
+                    };
+                    var start = moment(event.start).format( "YYYY-MM-DD HH:mm:ss");
+                    var end  = event.end ? moment(event.end).format( "YYYY-MM-DD HH:mm:ss") : moment(event.start).add('h', 1).format( "YYYY-MM-DD HH:mm:ss");
+                    $.ajax({
+                        url: 'jqhelp/calendar.php',
+                        data: {
+                            task:  'updateTimestamp', 
+                            start:  start,
+                            end:    end,
+                            id:     event.id ? event.id : $( "#id" ).val(),
+                            allDay: event.allDay
+                        },
+                        type: "POST",
+                        error: function () {
+                            alert('Ajax Error');
+                        }
+                    });
+            }, //end eventDrop
+            /*** Rezize Time ********************************************************************************************/
+            eventResize: function(event) {
+                    if ( event.done == 't' && !manager) {
+                        alert('Aktion nicht erlaubt!\nÄnderung wird nicht gesichert!');
+                        return;
+                    };
+                    var start = moment(event.start).format( "YYYY-MM-DD HH:mm:ss");
+                    var end   = moment(event.end).format( "YYYY-MM-DD HH:mm:ss");
+                    $.ajax({
+                        url: 'jqhelp/calendar.php',
+                        data: {
+                            task:  'updateTimestamp', 
+                            start:  start,
+                            end:    end,
+                            id:     event.id,
+                            allDay: event.allDay
+                        },
+                        type: "POST",
+                        error: function () {
+                            alert('Ajax Error');
+                        }
+                    });                
+            },//end eventResize
+        }); //end Calendar
+        $( "#Rcolor" ).click( function(){
+                $( "#RcolorPick" ).toggle();
+                var tmp = $.inArray($( '#Rcolor' ).val(),colors);
+                if ( tmp > -1  ) {
+                    $( 'div[style*="background-color:'+colors[tmp]+'"]' ).click()
+                }
+            });
+        $('#RcolorPick').colorPicker({			
+                //defaultColor: 1, 
+                columns: 13,     // number of columns (optional)  
+                color: colors,
+                click: function(color){
+                    $('#Rcolor').val(color);
+                    $("#RcolorPick").toggle();
+                }, 
+            }); //end colorPicker
+            
+        $( "#Rrepeat" ).selectBoxIt({
+                theme:      "jqueryui",
+                autoWidth:  true,
+                height: "12",
+                populate: [
+                    { value: "day",  text: langData[language]['DAY'] },
+                    { value: "week", text: langData[language]['WEEK'] },
+                    { value: "month",text: langData[language]['MONTH'] },
+                    { value: "year", text: langData[language]['YEAR'] }
+                ]   
+            }); //end repeat
+        $.widget("custom.catcomplete", $.ui.autocomplete, {
+            _renderMenu: function(ul,items) {
+                var that = this,
+                currentCategory = "";
+                $.each( items, function( index, item ) {
+                    if ( item.category != currentCategory ) {
+                        ul.append( "<li class=\'ui-autocomplete-category\'>" + item.category + "</li>" );
+                        currentCategory = item.category;
+                    }
+                    that._renderItemData(ul,item);
+                });
+            }
+        }); //end widget
+        $( "#Rressource" ).change(function(){
+                    //$( "#cust_vend_pers" ).val( false );
+                }).catcomplete({ 
+                    source: "jqhelp/autocompletion.php?case=ressource",  
+                    minLength: feature_ac_minlength,                       
+                    delay: feature_ac_delay,
+                    disabled: false,
+                    select: function( e, ui ) {
+                        var tmp = $.inArray($( '#Rcolor' ).val(),colors);
+
+                        $( '#Rcolor' ).val(ui.item.color);
+                        $( '#cust_vend_pers' ).val(ui.item.src);
+                    }
+            })
+        //$( "div#ressourcen" ).tabs( "refresh" );
+    $( '#Rdialog' ).css('visibility','visible');
+    }); //end done
+}); //end ready
+</script>
+
+<style>
+
+    .ui-autocomplete-category {
+        font-weight: bold;
+        padding: .2em .4em;
+        margin: .8em 0 .2em;
+        line-height: 1.5;
+    }
+
+    #RtitleLabel         { position:absolute; top:20px;  left:32px; }
+    #RtitleInp           { position:absolute; top:20px;  left:195px;}
+    #Rstart              { position:absolute; top:50px;  left:32px; }
+    #RstartDateInp       { position:absolute; top:50px;  left:95px;}
+    #RstartTimeInp       { position:absolute; top:50px;  left:195px; }
+    #RchkboxAllDay       { position:absolute; top:48px;  left:295px; }
+    #RchkboxDone         { position:absolute; top:78px;  left:295px; }
+    #RcolorLabel         { position:absolute; top:50px;  left:475px; }
+    #RcolorInp           { position:absolute; top:50px;  left:550px; }
+    #RcolorPick          { position:absolute; top:80px;  left:450px; z-index: 1; }
+    #Rend                { position:absolute; top:80px;  left:32px; }
+    #RendDateInp         { position:absolute; top:80px;  left:95px; }
+    #RendTimeInp         { position:absolute; top:80px;  left:195px;}
+    #RuserLabel          { position:absolute; top:113px; left:32px; }
+    #RuserDrop           { position:absolute; top:130px; left:32px;}
+    #RrepeatLabel        { position:absolute; top:113px; left:220px;}
+    #RrepeatFactorInput  { position:absolute; top:130px; left:220px;}
+    #RrepeatSelect       { position:absolute; top:130px; left:270px;}
+    #RrepeatQuantityInput{ position:absolute; top:130px; left:400px;}
+    #RrepeatEndInput     { position:absolute; top:130px; left:500px;}
+    #RdescTitle          { position:absolute; top:156px; left:30px;}
+    #Rdescription        { position:absolute; top:173px; left:30px;}
+    .title{
+         width: 440px;
+    }    
+    .date{
+         width: 90px;
+    }
+    .time{
+         width: 80px;
+    }
+    .location{
+         width: 155px;
+    } 
+    .repeatfactor{
+         width: 30px;
+         text-align: right;
+    }
+    .inp-checkbox+label {
+        margin: .5em;
+        width:16px; 
+        height:16px; 
+        vertical-align:middle;
+    }
+    .selectboxit-container .selectboxit-options {width: 125px;}      
+    .selectboxit-container span, .selectboxit-container .selectboxit-options a {height: 25px; line-height: 25px;}
+    #RrepeatSelectBoxItContainer.selectboxit-container .selectboxit-options {width: 70px;}
+</style>
+
+</head>
+<body>
+<div class="ui-widget-content" id="myressource" style='border:1px;'>
+    <div id="Rdialog" class="event-dialog" title="Ressource" style='visibility:hidden'>
+        <div id="Rdialog-inner">
+            <div id="RtitleLabel">
+              <b data-lang='RESSOURCE' class='lang'></b> 
+            </div> 
+            <div id="RtitleInp">
+                <input type="text" id="Rressource" autocomplete="off"  class="ui-widget-content ui-corner-all title">
+                <input type="text" id="Rid" style="visibility: hidden" class="ui-widget-content ui-corner-all">
+            </div>
+            <div id="Rstart">
+              <b>Start: </b> 
+            </div>    
+            <div id="RstartDateInp">
+                <input type="text" id="RstartDate" class="text ui-widget-content ui-corner-all date">
+            </div>
+            <div id="RchkboxAllDay"><input class="inp-checkbox" id="RallDay" type="checkbox"><label for="allDay" data-lang='ALLDAY' class='lang' ></label></div>
+            <div id="RchkboxDone">  <input class="inp-checkbox" id="Rdone"   type="checkbox"><label for="Rdone"  data-lang='PASSED' class='lang'></label></div>
+            <div id="RcolorLabel" data-lang='COLOR' class='lang' ></div>  
+            <div id="RcolorInp">
+                <input type="text" id="Rcolor" class="text ui-widget-content ui-corner-all date">
+            </div>
+            <div id="RcolorPick" style="display: none"></div>
+            <div id="RstartTimeInp">
+                <input type="text" id="RstartTime" class="text ui-widget-content ui-corner-all time">
+            </div>
+            <div id="Rend">
+              <b data-lang='END' class='lang'></b> 
+            </div>    
+            <div id="RendDateInp">
+                <input type="text" id="RendDate" class="text ui-widget-content ui-corner-all date">
+            </div>
+            <div id="RendTimeInp">
+                <input type="text" id="RendTime" class="text ui-widget-content ui-corner-all time">
+            </div>
+            <div id="RuserLabel" data-lang='USER' class='lang'>
+            </div> 
+            <div id="RuserDrop">
+                <select id="Ruser" >
+                </select> 
+            </div>
+            <div id="RrepeatLabel" data-lang='REPS' class='lang'></div>          
+            <div id="RrepeatFactorInput">
+                <form>
+                    <input type="text"  id="Rrepeat_factor" class=" ui-widget-content ui-corner-all repeatfactor" > -     
+                </form>
+            </div> 
+            <div id="RrepeatSelect">   
+                <select id="Rrepeat" ></select> 
+            </div>  
+            <div id="RrepeatQuantityInput">
+                <form>
+                    <input type="text"  id="Rrepeat_quantity" class=" ui-widget-content ui-corner-all repeatfactor"><span data-lang="BY_UNTIL" class="lang"></span> 
+                </form>
+            </div> 
+            <div id="RrepeatEndInput">
+                <form>
+                    <input type="text"  id="Rrepeat_end" class=" ui-widget-content ui-corner-all date" >    
+                </form>
+            </div> 
+            <div id="RdescTitle">
+              <b data-lang='NOTE' class='lang'></b> 
+            </div>    
+            <textarea name="description" id="Rdescription" class="text ui-widget-content ui-corner-all" rows="10" cols="64"></textarea>
+        </div>
+    </div>
+
+<div id="calendarressourcen"></div>
+
+</div>
+</body>
+</html>
